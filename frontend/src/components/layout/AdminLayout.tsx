@@ -97,7 +97,13 @@ export default function AdminLayout() {
 
         {/* User Profile */}
         <div className="p-4 border-t border-dark-700">
-          <button className="flex items-center gap-3 w-full p-2 rounded-xl text-slate-400 hover:text-white hover:bg-dark-700/50 transition-colors">
+          <button 
+            onClick={() => {
+              localStorage.removeItem('user');
+              window.location.href = '/login';
+            }}
+            className="flex items-center gap-3 w-full p-2 rounded-xl text-slate-400 hover:text-white hover:bg-dark-700/50 transition-colors"
+          >
             <LogOut className="w-5 h-5 shrink-0" />
             <motion.span 
               animate={{ opacity: isSidebarOpen ? 1 : 0, display: isSidebarOpen ? 'block' : 'none' }}
@@ -110,7 +116,7 @@ export default function AdminLayout() {
       </motion.aside>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col min-w-0">
+      <main className="flex-1 flex flex-col min-w-0 relative">
         {/* Top Header */}
         <header className="h-20 bg-dark-800/80 backdrop-blur-md border-b border-dark-700 flex items-center justify-between px-6 sticky top-0 z-30">
           <div className="flex items-center gap-4">
@@ -135,11 +141,30 @@ export default function AdminLayout() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            <button className="p-2 text-slate-400 hover:text-brand-400 relative transition-colors">
+          <div className="flex items-center gap-4 relative">
+            <button 
+              onClick={() => {
+                const el = document.getElementById('notifications-dropdown');
+                if (el) el.classList.toggle('hidden');
+              }}
+              className="p-2 text-slate-400 hover:text-brand-400 relative transition-colors"
+            >
               <Bell className="w-5 h-5" />
               <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-brand-500 rounded-full shadow-[0_0_8px_rgba(20,184,166,0.8)]"></span>
             </button>
+            
+            {/* Notifications Dropdown */}
+            <div id="notifications-dropdown" className="hidden absolute top-14 right-20 w-64 bg-dark-800 border border-dark-600 rounded-xl shadow-2xl overflow-hidden z-50">
+              <div className="p-4 border-b border-dark-700 bg-dark-900/50">
+                <h3 className="text-white font-medium">Notifications</h3>
+              </div>
+              <div className="p-6 text-center text-slate-400 text-sm">
+                You're all caught up!
+                <br />
+                <span className="text-xs text-slate-500 mt-1 block">No new notifications.</span>
+              </div>
+            </div>
+
             <button 
               onClick={() => setIsCartOpen(true)}
               className="p-2 text-slate-400 hover:text-brand-400 relative transition-colors"
