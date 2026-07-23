@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Menu, X, Zap, Mail, Phone, MapPin } from 'lucide-react';
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -119,13 +119,13 @@ export default function PublicLayout() {
               </p>
               <div className="flex gap-4">
                 <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  <Facebook className="w-4 h-4" />
+                  FB
                 </a>
                 <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  <Twitter className="w-4 h-4" />
+                  TW
                 </a>
                 <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors">
-                  <Instagram className="w-4 h-4" />
+                  IG
                 </a>
               </div>
             </div>

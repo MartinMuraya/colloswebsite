@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { Target, Users, Shield, Award } from 'lucide-react';
+import { Target, Award } from 'lucide-react';
 
 export default function AboutUsPage() {
   return (
