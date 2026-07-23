@@ -7,6 +7,7 @@ import AdminLayout from './components/layout/AdminLayout';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ProductCatalogPage from './features/catalog/pages/ProductCatalogPage';
 import CustomersPage from './features/customers/pages/CustomersPage';
+import PaymentsPage from './features/payments/pages/PaymentsPage';
 import PublicLayout from './features/public/components/PublicLayout';
 import HomePage from './features/public/pages/HomePage';
 import AboutUsPage from './features/public/pages/AboutUsPage';
@@ -27,27 +28,31 @@ export const router = createBrowserRouter([
       { path: 'register', element: <RegisterPage /> },
       { path: 'verify-email/:id/:hash', element: <VerifyEmailPage /> },
       { path: 'auth/callback', element: <GoogleCallback /> },
-    ]
-  },
-  {
-    path: '/dashboard',
-    element: <AdminLayout />,
-    children: [
       {
-        path: '',
-        element: <DashboardPage />,
-      },
-      {
-        path: 'catalog',
-        element: <ProductCatalogPage />,
-      },
-      {
-        path: 'customers',
-        element: <CustomersPage />,
-      },
-      {
-        path: 'settings',
-        element: <SettingsPage />,
+        path: 'dashboard',
+        element: <AdminLayout />,
+        children: [
+          {
+            path: '',
+            element: <DashboardPage />,
+          },
+          {
+            path: 'catalog',
+            element: <ProductCatalogPage />,
+          },
+          {
+            path: 'customers',
+            element: <CustomersPage />,
+          },
+          {
+            path: 'payments',
+            element: <PaymentsPage />,
+          },
+          {
+            path: 'settings',
+            element: <SettingsPage />,
+          }
+        ]
       }
     ]
   }

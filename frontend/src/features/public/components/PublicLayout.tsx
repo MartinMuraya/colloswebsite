@@ -1,13 +1,38 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon } from 'lucide-react';
-import { useState } from 'react';
+import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut } from 'lucide-react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../contexts/ThemeContext';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../store';
+import CartDrawer from '../../catalog/components/CartDrawer';
 
 export default function PublicLayout() {
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const location = useLocation();
+  const [user, setUser] = useState<any>(null);
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
+
+  useEffect(() => {
+    const userStr = localStorage.getItem('user');
+    if (userStr) {
+      try {
+        setUser(JSON.parse(userStr));
+      } catch (e) {
+        console.error('Failed to parse user session');
+      }
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem('user');
+    setUser(null);
+    window.location.href = '/login';
+  };
 
   const navigation = [
     { name: 'Home', href: '/' },
@@ -16,7 +41,11 @@ export default function PublicLayout() {
     { name: 'Contact', href: '/contact' },
   ];
 
-  const isActive = (path: string) => location.pathname === path;
+  if (user) {
+    navigation.push({ name: 'Dashboard', href: '/dashboard' });
+  }
+
+  const isActive = (path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));
 
   return (
     <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-gray-900 transition-colors">
@@ -39,7 +68,7 @@ export default function PublicLayout() {
                   key={item.name}
                   to={item.href}
                   className={`text-sm font-semibold transition-all hover:text-blue-600 ${
-                    isActive(item.href) ? 'text-blue-600' : 'text-gray-600 dark:text-gray-300'
+                    isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
                   }`}
                 >
                   {item.name}
@@ -47,8 +76,8 @@ export default function PublicLayout() {
               ))}
             </div>
 
-            {/* Auth Buttons - Right */}
-            <div className="hidden md:flex items-center justify-end w-auto gap-4">
+            {/* Controls - Right */}
+            <div className="hidden md:flex items-center justify-end w-auto gap-4 relative">
               <button
                 onClick={toggleTheme}
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
@@ -56,19 +85,76 @@ export default function PublicLayout() {
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              
-              <Link 
-                to="/login" 
-                className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-              >
-                Log In
-              </Link>
-              <Link 
-                to="/register" 
-                className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0"
-              >
-                Sign Up
-              </Link>
+
+              {user ? (
+                <>
+                  <button 
+                    onClick={() => {
+                      const el = document.getElementById('public-notifications');
+                      if (el) el.classList.toggle('hidden');
+                    }}
+                    className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 relative transition-colors"
+                  >
+                    <Bell className="w-5 h-5" />
+                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                  </button>
+
+                  <div id="public-notifications" className="hidden absolute top-14 right-20 w-64 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50">
+                    <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                      <h3 className="text-gray-900 dark:text-white font-medium">Notifications</h3>
+                    </div>
+                    <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">
+                      You're all caught up!
+                      <br />
+                      <span className="text-xs text-gray-400 dark:text-gray-500 mt-1 block">No new notifications.</span>
+                    </div>
+                  </div>
+
+                  <button 
+                    onClick={() => setIsCartOpen(true)}
+                    className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 relative transition-colors mr-2"
+                  >
+                    <ShoppingCart className="w-5 h-5" />
+                    {cartItemCount > 0 && (
+                      <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-[0_0_8px_rgba(59,130,246,0.8)]">
+                        {cartItemCount}
+                      </span>
+                    )}
+                  </button>
+
+                  <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                    <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden cursor-pointer group relative">
+                      <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                        {user.name?.substring(0, 2).toUpperCase() || 'U'}
+                      </span>
+                      <div className="absolute top-10 right-0 hidden group-hover:block bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl w-48 z-50 py-2">
+                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                        </div>
+                        <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
+                          <LogOut className="w-4 h-4" /> Logout
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <Link 
+                    to="/login" 
+                    className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+                  >
+                    Log In
+                  </Link>
+                  <Link 
+                    to="/register" 
+                    className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile menu button */}
@@ -78,6 +164,17 @@ export default function PublicLayout() {
                 className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-800 transition-colors"
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+              </button>
+              <button 
+                onClick={() => setIsCartOpen(true)}
+                className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 transition-colors relative"
+              >
+                <ShoppingCart className="w-5 h-5" />
+                {cartItemCount > 0 && (
+                  <span className="absolute -top-1 -right-1 min-w-4 h-4 px-1 bg-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold text-white shadow-[0_0_8px_rgba(59,130,246,0.8)]">
+                    {cartItemCount}
+                  </span>
+                )}
               </button>
               <button
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -113,21 +210,33 @@ export default function PublicLayout() {
                     {item.name}
                   </Link>
                 ))}
+                
                 <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block w-full text-center px-4 py-3 rounded-xl text-base font-semibold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/register"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="block w-full text-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20"
-                  >
-                    Sign Up
-                  </Link>
+                  {user ? (
+                    <button
+                      onClick={handleLogout}
+                      className="block w-full text-center px-4 py-3 rounded-xl text-base font-semibold text-red-600 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 transition-colors"
+                    >
+                      Log Out
+                    </button>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block w-full text-center px-4 py-3 rounded-xl text-base font-semibold text-gray-700 dark:text-gray-200 bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+                      >
+                        Log In
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="block w-full text-center px-4 py-3 rounded-xl text-base font-semibold text-white bg-blue-600 hover:bg-blue-700 transition-colors shadow-md shadow-blue-500/20"
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -136,12 +245,12 @@ export default function PublicLayout() {
       </nav>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col">
+      <main className="flex-1 flex flex-col relative w-full h-full max-w-full">
         <Outlet />
       </main>
 
       {/* Footer */}
-      <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900 transition-colors">
+      <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900 transition-colors mt-auto">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="col-span-1 md:col-span-2">
@@ -207,6 +316,10 @@ export default function PublicLayout() {
           </div>
         </div>
       </footer>
+      <CartDrawer 
+        isOpen={isCartOpen} 
+        onClose={() => setIsCartOpen(false)} 
+      />
     </div>
   );
 }

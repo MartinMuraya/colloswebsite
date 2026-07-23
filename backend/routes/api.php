@@ -12,7 +12,7 @@ use App\Modules\Catalog\Presentation\Controllers\ProductController;
 
 Route::get('/user', function (Request $request) {
     return $request->user();
-})->middleware('auth:sanctum');
+})->middleware('auth');
 
 Route::prefix('dashboard')->group(function () {
     Route::get('/stats', [DashboardController::class, 'stats']);
@@ -22,16 +22,16 @@ Route::prefix('dashboard')->group(function () {
 Route::prefix('catalog')->group(function () {
     Route::get('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'index']);
     // Admin only routes
-    Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store'])->middleware('auth:sanctum');
-    Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update'])->middleware('auth:sanctum');
-    Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy'])->middleware('auth:sanctum');
+    Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store'])->middleware('auth');
+    Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update'])->middleware('auth');
+    Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy'])->middleware('auth');
 });
 
 Route::prefix('settings')->group(function () {
     Route::get('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'index']);
     // Admin only
-    Route::post('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateStoreSettings'])->middleware('auth:sanctum');
-    Route::post('/profile', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateProfile'])->middleware('auth:sanctum');
+    Route::post('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateStoreSettings'])->middleware('auth');
+    Route::post('/profile', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateProfile'])->middleware('auth');
 });
 
 Route::post('/contact', [\App\Modules\Support\Presentation\Controllers\ContactController::class, 'send']);
@@ -53,7 +53,7 @@ Route::get('/setup-db', function () {
     }
 });
 
-Route::prefix('auth')->middleware('web')->group(function () {
+Route::prefix('auth')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
     
@@ -68,6 +68,7 @@ Route::prefix('auth')->middleware('web')->group(function () {
 
 
 Route::prefix('payments')->group(function () {
+    Route::get('/', [\App\Modules\Payments\Presentation\Controllers\PaymentController::class, 'index'])->middleware('auth');
     Route::post('/mpesa/stk-push', [\App\Modules\Payments\Presentation\Controllers\MpesaController::class, 'initiatePayment']);
     Route::post('/mpesa/callback', [\App\Modules\Payments\Presentation\Controllers\MpesaController::class, 'callback']);
 });
