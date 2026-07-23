@@ -27,10 +27,12 @@ export default {
           950: '#042f2e',
         },
         dark: {
-          900: '#0B0E14', // Super dark, almost black
-          800: '#151A23', // Card background
-          700: '#1F2633', // Lighter borders
+          900: '#0B0E14',
+          800: '#151A23',
+          700: '#1F2633',
           600: '#2A3441',
+          500: '#3A4759',
+          400: '#4A5B70',
         }
       },
       backgroundImage: {
