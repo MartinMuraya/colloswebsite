@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, ShoppingCart, Plus, Minus, Trash2, Smartphone, Loader2, CheckCircle2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '../../../store';
+import type { RootState } from '../../../store';
 import { removeItem, updateQuantity, clearCart } from '../../../store/slices/cartSlice';
 import axios from '../../../lib/axios';
 

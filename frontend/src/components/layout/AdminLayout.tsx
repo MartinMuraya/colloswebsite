@@ -1,6 +1,9 @@
 import { useState } from 'react';
-import { Outlet, NavLink, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../store';
+import CartDrawer from '../../features/catalog/components/CartDrawer';
 import { 
   LayoutDashboard, 
   Package, 
@@ -9,9 +12,9 @@ import {
   Settings, 
   LogOut, 
   Menu, 
-  X,
   Zap,
-  Bell
+  Bell,
+  Search
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -20,7 +23,7 @@ export default function AdminLayout() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const cartItemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
+  const cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
