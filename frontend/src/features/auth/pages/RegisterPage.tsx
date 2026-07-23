@@ -18,7 +18,7 @@ export default function RegisterPage() {
       await api.get('/sanctum/csrf-cookie');
       
       // 2. Register
-      const registerResponse = await api.post('/auth/register', { name, email, password });
+      await api.post('/auth/register', { name, email, password });
       
       // 3. Immediately Login
       const loginResponse = await api.post('/auth/login', { email, password });
