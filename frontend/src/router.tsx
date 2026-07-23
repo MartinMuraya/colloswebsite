@@ -23,23 +23,11 @@ export const router = createBrowserRouter([
       { path: 'about', element: <AboutUsPage /> },
       { path: 'contact', element: <ContactUsPage /> },
       { path: 'products', element: <PublicProductsPage /> },
+      { path: 'login', element: <LoginPage /> },
+      { path: 'register', element: <RegisterPage /> },
+      { path: 'verify-email/:id/:hash', element: <VerifyEmailPage /> },
+      { path: 'auth/callback', element: <GoogleCallback /> },
     ]
-  },
-  {
-    path: '/login',
-    element: <LoginPage />,
-  },
-  {
-    path: '/register',
-    element: <RegisterPage />,
-  },
-  {
-    path: '/verify-email/:id/:hash',
-    element: <VerifyEmailPage />,
-  },
-  {
-    path: '/auth/callback',
-    element: <GoogleCallback />,
   },
   {
     path: '/dashboard',

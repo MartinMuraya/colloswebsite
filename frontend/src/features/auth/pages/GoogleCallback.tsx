@@ -21,10 +21,10 @@ export default function GoogleCallback() {
   }, [searchParams, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-900">
+    <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="text-center">
         <Loader2 className="w-12 h-12 text-brand-500 animate-spin mx-auto mb-4" />
-        <h2 className="text-xl font-medium text-slate-200">Completing Sign In...</h2>
+        <h2 className="text-xl font-medium text-gray-900 dark:text-slate-200">Completing Sign In...</h2>
       </div>
     </div>
   );

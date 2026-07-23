@@ -6,6 +6,7 @@ import { RouterProvider } from 'react-router-dom'
 import { store, persistor } from './store'
 import { router } from './router'
 import { PersistGate } from 'redux-persist/integration/react'
+import { ThemeProvider } from './contexts/ThemeContext'
 import './index.css'
 
 const queryClient = new QueryClient();
@@ -15,7 +16,9 @@ createRoot(document.getElementById('root')!).render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
+          <ThemeProvider>
+            <RouterProvider router={router} />
+          </ThemeProvider>
         </QueryClientProvider>
       </PersistGate>
     </Provider>

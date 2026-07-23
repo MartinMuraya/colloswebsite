@@ -42,19 +42,12 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center relative overflow-hidden bg-dark-900">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-        <div className="absolute -top-40 -left-40 w-96 h-96 bg-brand-500 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse-slow"></div>
-        <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-brand-400 rounded-full mix-blend-screen filter blur-[100px] opacity-20 animate-pulse-slow" style={{ animationDelay: '1.5s' }}></div>
-      </div>
-
-      {/* Main Glass Container */}
+    <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div 
-        initial={{ opacity: 0, y: 30 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-        className="glass-panel w-full max-w-md p-8 md:p-10 z-10 mx-4"
+        transition={{ duration: 0.5 }}
+        className="glass-panel p-8 w-full max-w-md"
       >
         <div className="flex justify-center mb-8">
           <motion.div 
@@ -67,8 +60,8 @@ export default function RegisterPage() {
         </div>
 
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold mb-2">Create Account</h2>
-          <p className="text-slate-400 text-sm">Join the enterprise portal today.</p>
+          <h2 className="text-3xl font-bold mb-2 text-gray-900 dark:text-white">Create Account</h2>
+          <p className="text-slate-500 dark:text-slate-400 text-sm">Join the enterprise portal to start managing.</p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-6">
@@ -79,7 +72,7 @@ export default function RegisterPage() {
           )}
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 ml-1">Full Name</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Full Name</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <User className="h-5 w-5 text-slate-500" />
@@ -96,7 +89,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 ml-1">Email Address</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Email Address</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Mail className="h-5 w-5 text-slate-500" />
@@ -113,7 +106,7 @@ export default function RegisterPage() {
           </div>
 
           <div className="space-y-2">
-            <label className="text-sm font-medium text-slate-300 ml-1">Password</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300 ml-1">Password</label>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-slate-500" />
@@ -151,10 +144,10 @@ export default function RegisterPage() {
         <div className="mt-6">
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-dark-600"></div>
+              <div className="w-full border-t border-gray-200 dark:border-dark-600"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-dark-800 text-slate-400">Or continue with</span>
+              <span className="px-2 bg-white dark:bg-dark-800 text-slate-500 dark:text-slate-400">Or continue with</span>
             </div>
           </div>
 
@@ -162,7 +155,7 @@ export default function RegisterPage() {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/auth/google/redirect`}
-            className="mt-6 w-full flex items-center justify-center gap-3 px-6 py-3 border border-dark-600 rounded-lg text-slate-300 hover:bg-dark-700 transition-colors bg-dark-900/50"
+            className="mt-6 w-full flex items-center justify-center gap-3 px-6 py-3 border border-gray-200 dark:border-dark-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors bg-white dark:bg-dark-900/50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
@@ -174,8 +167,8 @@ export default function RegisterPage() {
           </motion.button>
         </div>
 
-        <div className="mt-6 text-center text-sm text-slate-400">
-          Already have an account? <Link to="/login" className="text-brand-400 hover:text-brand-300 font-medium">Log in</Link>
+        <div className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+          Already have an account? <Link to="/login" className="text-brand-600 dark:text-brand-400 hover:text-brand-500 dark:hover:text-brand-300 font-medium">Log in</Link>
         </div>
 
         <div className="mt-6 flex items-center justify-center space-x-2 text-xs text-slate-500">

@@ -35,7 +35,7 @@ export default function VerifyEmailPage() {
   }, [id, hash, navigate]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-dark-900">
+    <div className="flex-grow flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <motion.div 
         initial={{ opacity: 0, scale: 0.9 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -47,13 +47,13 @@ export default function VerifyEmailPage() {
           {status === 'error' && <XCircle className="w-16 h-16 text-red-500" />}
         </div>
         
-        <h2 className="text-2xl font-bold mb-2">
+        <h2 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">
           {status === 'loading' && 'Verifying Email'}
           {status === 'success' && 'Verified!'}
           {status === 'error' && 'Verification Failed'}
         </h2>
         
-        <p className="text-slate-400 mb-8">{message}</p>
+        <p className="text-slate-500 dark:text-slate-400 mb-8">{message}</p>
 
         {status === 'error' && (
           <button 
