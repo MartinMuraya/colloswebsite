@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export default function AdminLayout() {
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [isSidebarOpen] = useState(true);
   const [isMobileOpen, setMobileOpen] = useState(false);
 
   const navItems = [
