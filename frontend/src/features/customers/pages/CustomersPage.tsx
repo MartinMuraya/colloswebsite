@@ -1,5 +1,4 @@
-import React from 'react';
-import { Users, Search, MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { Search, Edit, Trash2 } from 'lucide-react';
 
 const mockCustomers = [
   { id: 1, name: 'Martin Muraya', email: 'martin@example.com', orders: 12, totalSpent: 124500, status: 'Active' },

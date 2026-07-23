@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Upload } from 'lucide-react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../../lib/axios';
+import api from '../../../lib/axios';
 
 interface ProductFormModalProps {
   isOpen: boolean;

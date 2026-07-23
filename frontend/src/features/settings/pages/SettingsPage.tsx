@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { Save, Upload, User, Store, AlertCircle } from 'lucide-react';
-import { api } from '../../../lib/axios';
+import { Save, Upload, User, Store } from 'lucide-react';
+import api from '../../../lib/axios';
 
 export default function SettingsPage() {
   const queryClient = useQueryClient();

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '../../../lib/axios';
+import api from '../../../lib/axios';
 import { useDispatch } from 'react-redux';
 import { addItem } from '../../../store/slices/cartSlice';
 import { Plus, Search, Filter, Edit, Trash2, ShoppingCart, Loader2, AlertCircle, Image as ImageIcon } from 'lucide-react';
