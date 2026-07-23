@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Loader2 } from 'lucide-react';
-import api from '../../../lib/axios';
 
 export default function GoogleCallback() {
   const [searchParams] = useSearchParams();

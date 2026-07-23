@@ -3,11 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../../lib/axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem, CartItem } from '../../../store/slices/cartSlice';
-import { Search, ShoppingCart, Loader2, Image as ImageIcon, Zap, AlertCircle, X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
+import { addItem } from '../../../store/slices/cartSlice';
+import type { CartItem } from '../../../store/slices/cartSlice';
+import { Search, ShoppingCart, Loader2, Image as ImageIcon, AlertCircle, X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
 import { updateQuantity, removeItem } from '../../../store/slices/cartSlice';
 import { useNavigate } from 'react-router-dom';
-import { RootState } from '../../../store';
+import type { RootState } from '../../../store';
 
 export default function PublicProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
