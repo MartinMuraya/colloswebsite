@@ -172,10 +172,6 @@ export default function AdminLayout() {
       <CartDrawer 
         isOpen={isCartOpen} 
         onClose={() => setIsCartOpen(false)} 
-        onCheckout={() => {
-          // Logic to handle checkout, we can trigger an event or redirect
-          alert('Cart Checkout Ready!');
-        }}
       />
     </div>
   );
