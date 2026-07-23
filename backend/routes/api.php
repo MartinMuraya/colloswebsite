@@ -17,6 +17,14 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/recent-orders', [DashboardController::class, 'recentOrders']);
 });
 
+Route::prefix('catalog')->group(function () {
+    Route::get('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'index']);
+    // Admin only routes
+    Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store'])->middleware('auth:sanctum');
+    Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update'])->middleware('auth:sanctum');
+    Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy'])->middleware('auth:sanctum');
+});
+
 Route::prefix('settings')->group(function () {
     Route::get('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'index']);
     // Admin only
@@ -48,10 +56,6 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', LoginController::class);
 });
 
-Route::prefix('catalog')->group(function () {
-    Route::get('/products', [ProductController::class, 'index']);
-    Route::post('/products', [ProductController::class, 'store']);
-});
 
 Route::prefix('payments')->group(function () {
     Route::post('/mpesa/stk-push', [\App\Modules\Payments\Presentation\Controllers\MpesaController::class, 'initiatePayment']);
