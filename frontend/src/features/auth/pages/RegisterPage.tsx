@@ -14,19 +14,13 @@ export default function RegisterPage() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // 1. Get CSRF cookie
-      await api.get('/sanctum/csrf-cookie');
-      
-      // 2. Register
-      await api.post('/auth/register', { name, email, password });
-      
-      // 3. Immediately Login
-      const loginResponse = await api.post('/auth/login', { email, password });
-      
-      return loginResponse.data;
+      // 1. Register
+      const response = await api.post('/auth/register', { name, email, password });
+      return response.data;
     },
     onSuccess: (data) => {
-      // Save user to localStorage
+      // Save user and token to localStorage
+      localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/dashboard');
     },

@@ -13,13 +13,12 @@ export default function LoginPage() {
 
   const mutation = useMutation({
     mutationFn: async () => {
-      // First hit sanctum CSRF cookie, then login
-      await api.get('/sanctum/csrf-cookie');
       const response = await api.post('/auth/login', { email, password });
       return response.data;
     },
     onSuccess: (data) => {
-      // Save user to localStorage to keep track
+      // Save user and token
+      localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
       navigate('/dashboard');
     },

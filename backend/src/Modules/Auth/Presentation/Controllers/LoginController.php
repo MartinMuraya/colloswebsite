@@ -16,16 +16,22 @@ class LoginController extends Controller
         ]);
 
         if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
             $user = Auth::user();
+            
+            // Assign Super Admin role if it matches env and they don't have it
+            if ($user->email === env('SUPER_ADMIN_EMAIL') && !$user->hasRole('Super Admin')) {
+                $user->assignRole('Super Admin');
+            } elseif (!$user->hasRole('Super Admin') && !$user->hasRole('Admin') && !$user->hasRole('Customer')) {
+                $user->assignRole('Customer');
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+            $user->load('roles'); // Ensure roles are returned
             
             return response()->json([
                 'message' => 'Login successful',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ],
+                'token' => $token,
+                'user' => $user,
             ], 200);
         }
 

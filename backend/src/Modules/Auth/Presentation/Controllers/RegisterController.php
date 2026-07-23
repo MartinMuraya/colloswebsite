@@ -27,13 +27,19 @@ class RegisterController extends Controller
 
             event(new Registered($user));
 
+            if ($user->email === env('SUPER_ADMIN_EMAIL')) {
+                $user->assignRole('Super Admin');
+            } else {
+                $user->assignRole('Customer');
+            }
+
+            $token = $user->createToken('auth_token')->plainTextToken;
+            $user->load('roles');
+
             return response()->json([
-                'message' => 'User registered successfully. Please check your email to verify.',
-                'user' => [
-                    'id' => $user->id,
-                    'name' => $user->name,
-                    'email' => $user->email,
-                ]
+                'message' => 'User registered successfully.',
+                'token' => $token,
+                'user' => $user
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);
