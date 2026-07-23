@@ -13,9 +13,7 @@ class SocialAuthController extends Controller
 {
     public function redirect()
     {
-        return response()->json([
-            'url' => Socialite::driver('google')->stateless()->redirect()->getTargetUrl()
-        ]);
+        return Socialite::driver('google')->stateless()->redirect();
     }
 
     public function callback()
