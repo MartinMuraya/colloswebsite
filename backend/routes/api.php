@@ -17,6 +17,15 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/recent-orders', [DashboardController::class, 'recentOrders']);
 });
 
+Route::prefix('settings')->group(function () {
+    Route::get('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'index']);
+    // Admin only
+    Route::post('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateStoreSettings'])->middleware('auth:sanctum');
+    Route::post('/profile', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateProfile'])->middleware('auth:sanctum');
+});
+
+Route::post('/contact', [\App\Modules\Support\Presentation\Controllers\ContactController::class, 'send']);
+
 // Temporary route to setup the database on Render Free Tier
 Route::get('/setup-db', function () {
     try {
