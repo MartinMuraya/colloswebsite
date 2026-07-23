@@ -4,12 +4,21 @@ import AdminLayout from './components/layout/AdminLayout';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ProductCatalogPage from './features/catalog/pages/ProductCatalogPage';
 import CustomersPage from './features/customers/pages/CustomersPage';
+import PublicLayout from './features/public/components/PublicLayout';
+import HomePage from './features/public/pages/HomePage';
+import AboutUsPage from './features/public/pages/AboutUsPage';
+import ContactUsPage from './features/public/pages/ContactUsPage';
 import SettingsPage from './features/settings/pages/SettingsPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <Navigate to="/dashboard" replace />,
+    element: <PublicLayout />,
+    children: [
+      { path: '', element: <HomePage /> },
+      { path: 'about', element: <AboutUsPage /> },
+      { path: 'contact', element: <ContactUsPage /> },
+    ]
   },
   {
     path: '/login',
