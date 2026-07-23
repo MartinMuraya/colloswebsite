@@ -46,7 +46,7 @@ class SocialAuthController extends Controller
             return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/auth/callback?success=1');
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Google OAuth Error: ' . $e->getMessage());
-            return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/login?error=oauth_failed');
+            return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/login?error=' . urlencode('oauth_failed: ' . $e->getMessage()));
         }
     }
 }
