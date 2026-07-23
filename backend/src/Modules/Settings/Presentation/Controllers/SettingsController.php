@@ -35,13 +35,11 @@ class SettingsController extends Controller
 
         // Handle logo upload
         if ($request->hasFile('business_logo')) {
-            // Using Cloudinary or S3 depending on config
-            $path = $request->file('business_logo')->store('logos', 'cloudinary');
-            // Storage::disk('cloudinary')->url($path) would be used if we just stored path, 
-            // but Cloudinary driver usually returns the full URL from storeOnCloudinary.
-            // Wait, cloudinary-laravel has a specific method `storeOnCloudinary`
-            $url = $request->file('business_logo')->storeOnCloudinary('logos')->getSecurePath();
-            $settingsToUpdate['business_logo'] = $url;
+            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+            $uploadResult = $cloudinary->uploadApi()->upload($request->file('business_logo')->getRealPath(), [
+                'folder' => 'logos'
+            ]);
+            $settingsToUpdate['business_logo'] = $uploadResult['secure_url'];
         }
 
         foreach ($settingsToUpdate as $key => $value) {
@@ -70,8 +68,11 @@ class SettingsController extends Controller
         $user->email = $request->email;
 
         if ($request->hasFile('profile_picture')) {
-            $url = $request->file('profile_picture')->storeOnCloudinary('profiles')->getSecurePath();
-            $user->profile_picture = $url;
+            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+            $uploadResult = $cloudinary->uploadApi()->upload($request->file('profile_picture')->getRealPath(), [
+                'folder' => 'profiles'
+            ]);
+            $user->profile_picture = $uploadResult['secure_url'];
         }
 
         $user->save();
