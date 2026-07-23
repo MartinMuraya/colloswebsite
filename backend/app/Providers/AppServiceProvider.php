@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Auth\Notifications\VerifyEmail;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,6 +20,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        VerifyEmail::createUrlUsing(function (object $notifiable) {
+            return env('FRONTEND_URL', 'http://localhost:5173') . '/verify-email/' . $notifiable->getKey() . '/' . sha1($notifiable->getEmailForVerification());
+        });
     }
 }

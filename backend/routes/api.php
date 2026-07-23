@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Modules\Auth\Presentation\Controllers\RegisterController;
 use App\Modules\Auth\Presentation\Controllers\LoginController;
+use App\Modules\Auth\Presentation\Controllers\SocialAuthController;
+use App\Modules\Auth\Presentation\Controllers\VerificationController;
 use App\Modules\Payments\Presentation\Controllers\MpesaController;
 use App\Modules\Dashboard\Presentation\Controllers\DashboardController;
 use App\Modules\Catalog\Presentation\Controllers\ProductController;
@@ -54,6 +56,14 @@ Route::get('/setup-db', function () {
 Route::prefix('auth')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
+    
+    // OAuth
+    Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
+    Route::get('/google/callback', [SocialAuthController::class, 'callback']);
+    
+    // Verification
+    Route::post('/email/verify/{id}/{hash}', [VerificationController::class, 'verify']);
+    Route::post('/email/resend', [VerificationController::class, 'resend']);
 });
 
 

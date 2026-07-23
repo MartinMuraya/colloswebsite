@@ -3,42 +3,36 @@
 namespace App\Modules\Auth\Presentation\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Auth\Application\Actions\RegisterUserAction;
-use App\Modules\Auth\Application\DTO\RegisterUserDTO;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Auth\Events\Registered;
 
 class RegisterController extends Controller
 {
-    private RegisterUserAction $action;
-
-    public function __construct(RegisterUserAction $action)
-    {
-        $this->action = $action;
-    }
-
     public function __invoke(Request $request)
     {
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8',
         ]);
 
-        $dto = new RegisterUserDTO(
-            name: $validated['name'],
-            email: $validated['email'],
-            password: $validated['password']
-        );
-
         try {
-            $user = $this->action->execute($dto);
+            $user = User::create([
+                'name' => $validated['name'],
+                'email' => $validated['email'],
+                'password' => Hash::make($validated['password']),
+            ]);
+
+            event(new Registered($user));
+
             return response()->json([
-                'message' => 'User registered successfully',
+                'message' => 'User registered successfully. Please check your email to verify.',
                 'user' => [
-                    'id' => $user->getId(),
-                    'name' => $user->getName(),
-                    'email' => $user->getEmail()->getValue(),
-                    'roles' => $user->getRoles()
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
                 ]
             ], 201);
         } catch (\Exception $e) {

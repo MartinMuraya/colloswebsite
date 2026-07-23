@@ -9,6 +9,7 @@ export default function PublicLayout() {
 
   const navigation = [
     { name: 'Home', href: '/' },
+    { name: 'Products', href: '/products' },
     { name: 'About Us', href: '/about' },
     { name: 'Contact', href: '/contact' },
   ];
@@ -153,6 +154,7 @@ export default function PublicLayout() {
             <div>
               <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
               <ul className="space-y-3 text-sm">
+                <li><Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link></li>
                 <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">About Us</Link></li>
                 <li><Link to="/contact" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</Link></li>
                 <li><Link to="/login" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Admin Dashboard</Link></li>
