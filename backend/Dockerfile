@@ -35,8 +35,9 @@ COPY docker/nginx/default.conf /etc/nginx/http.d/default.conf
 # Setup Supervisor
 COPY docker/php/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
+# Create log directory and Set permissions
+RUN mkdir -p /var/log/supervisor && \
+    chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache /var/log/supervisor
 
 # Expose port 80
 EXPOSE 80
