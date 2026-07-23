@@ -1,7 +1,19 @@
 import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
-import storage from 'redux-persist/lib/storage'; // defaults to localStorage for web
 import cartReducer from './slices/cartSlice';
+
+// Custom storage wrapper to fix Vite/Rollup production build issues with redux-persist
+const storage = {
+  getItem: (key: string) => Promise.resolve(localStorage.getItem(key)),
+  setItem: (key: string, value: string) => {
+    localStorage.setItem(key, value);
+    return Promise.resolve(value);
+  },
+  removeItem: (key: string) => {
+    localStorage.removeItem(key);
+    return Promise.resolve();
+  },
+};
 
 const persistConfig = {
   key: 'root',
