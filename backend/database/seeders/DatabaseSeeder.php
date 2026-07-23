@@ -39,7 +39,10 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $cat) {
-            Category::create($cat);
+            Category::firstOrCreate(
+                ['slug' => $cat['slug']],
+                $cat
+            );
         }
 
         // Products
@@ -54,7 +57,10 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($products as $prod) {
-            Product::create($prod);
+            Product::firstOrCreate(
+                ['sku' => $prod['sku']],
+                $prod
+            );
         }
 
         // Orders
