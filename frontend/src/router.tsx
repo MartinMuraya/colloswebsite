@@ -3,6 +3,8 @@ import LoginPage from './features/auth/pages/LoginPage';
 import AdminLayout from './components/layout/AdminLayout';
 import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ProductCatalogPage from './features/catalog/pages/ProductCatalogPage';
+import CustomersPage from './features/customers/pages/CustomersPage';
+import SettingsPage from './features/settings/pages/SettingsPage';
 
 export const router = createBrowserRouter([
   {
@@ -24,6 +26,14 @@ export const router = createBrowserRouter([
       {
         path: 'catalog',
         element: <ProductCatalogPage />,
+      },
+      {
+        path: 'customers',
+        element: <CustomersPage />,
+      },
+      {
+        path: 'settings',
+        element: <SettingsPage />,
       }
     ]
   }
