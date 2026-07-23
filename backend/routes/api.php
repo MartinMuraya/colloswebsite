@@ -18,3 +18,8 @@ Route::prefix('auth')->group(function () {
 Route::prefix('catalog')->group(function () {
     Route::post('/products', [ProductController::class, 'store']);
 });
+
+Route::prefix('payments')->group(function () {
+    Route::post('/mpesa/stk-push', [\App\Modules\Payments\Presentation\Controllers\MpesaController::class, 'initiatePayment']);
+    Route::post('/mpesa/callback', [\App\Modules\Payments\Presentation\Controllers\MpesaController::class, 'callback']);
+});

@@ -1,16 +1,30 @@
-import { createBrowserRouter } from 'react-router-dom';
+import { createBrowserRouter, Navigate } from 'react-router-dom';
+import LoginPage from './features/auth/pages/LoginPage';
+import AdminLayout from './components/layout/AdminLayout';
+import DashboardPage from './features/dashboard/pages/DashboardPage';
+import ProductCatalogPage from './features/catalog/pages/ProductCatalogPage';
 
 export const router = createBrowserRouter([
   {
     path: '/',
-    element: <div className="p-8 text-center text-4xl font-bold text-blue-600">Enterprise Electrical Platform</div>,
+    element: <Navigate to="/dashboard" replace />,
   },
   {
     path: '/login',
-    element: <div>Login Page</div>,
+    element: <LoginPage />,
   },
   {
     path: '/dashboard',
-    element: <div>Dashboard</div>,
+    element: <AdminLayout />,
+    children: [
+      {
+        path: '',
+        element: <DashboardPage />,
+      },
+      {
+        path: 'catalog',
+        element: <ProductCatalogPage />,
+      }
+    ]
   }
 ]);
