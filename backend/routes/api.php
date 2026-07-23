@@ -53,15 +53,13 @@ Route::get('/setup-db', function () {
     }
 });
 
-Route::prefix('auth')->group(function () {
+Route::prefix('auth')->middleware('web')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
     
     // OAuth
-    Route::middleware('web')->group(function () {
-        Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
-        Route::get('/google/callback', [SocialAuthController::class, 'callback']);
-    });
+    Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
+    Route::get('/google/callback', [SocialAuthController::class, 'callback']);
     
     // Verification
     Route::post('/email/verify/{id}/{hash}', [VerificationController::class, 'verify']);
