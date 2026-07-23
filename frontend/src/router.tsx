@@ -8,6 +8,7 @@ import DashboardPage from './features/dashboard/pages/DashboardPage';
 import ProductCatalogPage from './features/catalog/pages/ProductCatalogPage';
 import CustomersPage from './features/customers/pages/CustomersPage';
 import PaymentsPage from './features/payments/pages/PaymentsPage';
+import UsersManagementPage from './features/dashboard/pages/UsersManagementPage';
 import PublicLayout from './features/public/components/PublicLayout';
 import HomePage from './features/public/pages/HomePage';
 import AboutUsPage from './features/public/pages/AboutUsPage';
@@ -33,7 +34,7 @@ export const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           {
-            path: '',
+            index: true,
             element: <DashboardPage />,
           },
           {
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
             element: <CustomersPage />,
           },
           {
+            path: 'users',
+            element: <UsersManagementPage />,
+          },
+          {
             path: 'payments',
             element: <PaymentsPage />,
           },
@@ -52,7 +57,11 @@ export const router = createBrowserRouter([
             path: 'settings',
             element: <SettingsPage />,
           }
-        ]
+        ],
+      },
+      {
+        path: 'customer-dashboard',
+        element: <div className="p-8 text-center text-gray-500">Welcome to your Customer Dashboard. Order history coming soon!</div>,
       }
     ]
   }

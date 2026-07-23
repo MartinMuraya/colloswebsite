@@ -8,7 +8,8 @@ import {
   Settings, 
   Menu, 
   Zap,
-  CreditCard
+  CreditCard,
+  Shield
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -20,6 +21,7 @@ export default function AdminLayout() {
     { name: 'Catalog', icon: Package, path: '/dashboard/catalog' },
     { name: 'Customers', icon: Users, path: '/dashboard/customers' },
     { name: 'Payments', icon: CreditCard, path: '/dashboard/payments' },
+    { name: 'User Roles', icon: Shield, path: '/dashboard/users' },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
   ];
 

@@ -12,7 +12,10 @@ const api = axios.create({
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // You can attach tokens here if not using Sanctum cookies
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
     return config;
   },
   (error) => {
@@ -27,6 +30,7 @@ api.interceptors.response.use(
     if (error.response?.status === 401) {
       // Handle unauthorized access (e.g., redirect to login)
       localStorage.removeItem('user');
+      localStorage.removeItem('auth_token');
       window.location.href = '/login';
     }
     return Promise.reject(error);

@@ -8,11 +8,20 @@ export default function GoogleCallback() {
 
   useEffect(() => {
     const success = searchParams.get('success');
+    const token = searchParams.get('token');
+    const userStr = searchParams.get('user');
     
-    if (success === '1') {
-      // In a real app, you might want to fetch the user profile here using /api/user
-      // For now we'll just redirect to dashboard since the HTTP-only cookie is set
-      navigate('/dashboard');
+    if (success === '1' && token && userStr) {
+      localStorage.setItem('auth_token', token);
+      localStorage.setItem('user', userStr);
+      
+      const userObj = JSON.parse(userStr);
+      // Determine redirection based on roles
+      if (userObj.role_names?.includes('Super Admin') || userObj.role_names?.includes('Admin')) {
+        navigate('/dashboard');
+      } else {
+        navigate('/');
+      }
     } else {
       // Failed to authenticate
       navigate('/login?error=oauth_failed');

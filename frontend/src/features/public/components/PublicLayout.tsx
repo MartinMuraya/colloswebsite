@@ -42,7 +42,8 @@ export default function PublicLayout() {
   ];
 
   if (user) {
-    navigation.push({ name: 'Dashboard', href: '/dashboard' });
+    const isAdmin = user.role_names?.includes('Super Admin') || user.role_names?.includes('Admin');
+    navigation.push({ name: 'Dashboard', href: isAdmin ? '/dashboard' : '/customer-dashboard' });
   }
 
   const isActive = (path: string) => location.pathname === path || (path !== '/' && location.pathname.startsWith(path));

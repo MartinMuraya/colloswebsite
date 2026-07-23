@@ -45,10 +45,23 @@ class SocialAuthController extends Controller
                 event(new Registered($user));
             }
 
-            Auth::login($user);
-            request()->session()->regenerate();
+            // Assign roles
+            if ($user->email === env('SUPER_ADMIN_EMAIL')) {
+                if (!$user->hasRole('Super Admin')) {
+                    $user->assignRole('Super Admin');
+                }
+            } else {
+                if (!$user->hasRole('Customer')) {
+                    $user->assignRole('Customer');
+                }
+            }
 
-            return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/auth/callback?success=1');
+            $token = $user->createToken('auth_token')->plainTextToken;
+
+            // Optional: load roles
+            $user->load('roles');
+
+            return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/auth/callback?success=1&token=' . urlencode($token) . '&user=' . urlencode(json_encode($user)));
         } catch (\Exception $e) {
             \Illuminate\Support\Facades\Log::error('Google OAuth Error: ' . $e->getMessage());
             return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/login?error=' . urlencode('oauth_failed: ' . $e->getMessage()));
