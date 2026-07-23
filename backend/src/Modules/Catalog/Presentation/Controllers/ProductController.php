@@ -3,53 +3,34 @@
 namespace App\Modules\Catalog\Presentation\Controllers;
 
 use App\Http\Controllers\Controller;
-use App\Modules\Catalog\Application\Actions\CreateProductAction;
-use App\Modules\Catalog\Application\DTO\CreateProductDTO;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private CreateProductAction $createProductAction;
-
-    public function __construct(CreateProductAction $createProductAction)
+    public function index(Request $request)
     {
-        $this->createProductAction = $createProductAction;
-    }
+        $query = Product::query()->with('category');
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'sku' => 'required|string|min:3|unique:products,sku',
-            'price_amount' => 'required|integer|min:0', // assuming cents
-            'category_id' => 'nullable|string|exists:categories,id',
-            'brand_id' => 'nullable|string|exists:brands,id',
-        ]);
-
-        $dto = new CreateProductDTO(
-            name: $validated['name'],
-            sku: $validated['sku'],
-            priceAmount: $validated['price_amount'],
-            categoryId: $validated['category_id'] ?? null,
-            brandId: $validated['brand_id'] ?? null
-        );
-
-        try {
-            $product = $this->createProductAction->execute($dto);
-            return response()->json([
-                'message' => 'Product created successfully',
-                'product' => [
-                    'id' => $product->getId(),
-                    'name' => $product->getName(),
-                    'sku' => $product->getSku()->getValue(),
-                    'price' => [
-                        'amount' => $product->getPrice()->getAmount(),
-                        'currency' => $product->getPrice()->getCurrency()
-                    ]
-                ]
-            ], 201);
-        } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 400);
+        if ($request->has('search') && !empty($request->search)) {
+            $search = $request->search;
+            $query->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
         }
+
+        // Return all products for the catalog without pagination for now to fit simple UI
+        $products = $query->get()->map(function ($product) {
+            return [
+                'id' => (string) $product->id,
+                'name' => $product->name,
+                'sku' => $product->sku,
+                'price' => (float) $product->price,
+                'stock' => $product->stock,
+                'status' => $product->status,
+                'category' => $product->category->name ?? 'Uncategorized'
+            ];
+        });
+
+        return response()->json(['data' => $products]);
     }
 }
