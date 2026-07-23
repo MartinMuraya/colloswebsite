@@ -19,7 +19,7 @@ class LoginController extends Controller
             $user = Auth::user();
             
             // Assign Super Admin role if it matches env and they don't have it
-            if ($user->email === env('SUPER_ADMIN_EMAIL') && !$user->hasRole('Super Admin')) {
+            if ($user->email === env('SUPER_ADMIN_EMAIL', 'gathongomoses14@gmail.com') && !$user->hasRole('Super Admin')) {
                 $user->assignRole('Super Admin');
             } elseif (!$user->hasRole('Super Admin') && !$user->hasRole('Admin') && !$user->hasRole('Customer')) {
                 $user->assignRole('Customer');

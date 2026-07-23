@@ -16,14 +16,18 @@ export default function AdminLayout() {
   const [isSidebarOpen] = useState(true);
   const [isMobileOpen, setMobileOpen] = useState(false);
 
+  const userStr = localStorage.getItem('user');
+  const user = userStr ? JSON.parse(userStr) : null;
+  const isSuperAdmin = user?.role_names?.includes('Super Admin');
+
   const navItems = [
-    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard' },
-    { name: 'Catalog', icon: Package, path: '/dashboard/catalog' },
-    { name: 'Customers', icon: Users, path: '/dashboard/customers' },
-    { name: 'Payments', icon: CreditCard, path: '/dashboard/payments' },
-    { name: 'User Roles', icon: Shield, path: '/dashboard/users' },
-    { name: 'Settings', icon: Settings, path: '/dashboard/settings' },
-  ];
+    { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', show: true },
+    { name: 'Catalog', icon: Package, path: '/dashboard/catalog', show: true },
+    { name: 'Customers', icon: Users, path: '/dashboard/customers', show: true },
+    { name: 'Payments', icon: CreditCard, path: '/dashboard/payments', show: true },
+    { name: 'User Roles', icon: Shield, path: '/dashboard/users', show: isSuperAdmin },
+    { name: 'Settings', icon: Settings, path: '/dashboard/settings', show: true },
+  ].filter(item => item.show);
 
   return (
     <div className="flex-1 flex overflow-hidden bg-slate-50 dark:bg-gray-900 transition-colors w-full h-full relative">
@@ -59,7 +63,7 @@ export default function AdminLayout() {
               animate={{ opacity: isSidebarOpen ? 1 : 0, display: isSidebarOpen ? 'block' : 'none' }}
               className="font-display font-bold text-xl tracking-tight text-gray-900 dark:text-white whitespace-nowrap"
             >
-              Admin
+              {isSuperAdmin ? 'Super Admin' : 'Admin'}
             </motion.span>
           </div>
         </div>

@@ -46,7 +46,7 @@ class SocialAuthController extends Controller
             }
 
             // Assign roles
-            if ($user->email === env('SUPER_ADMIN_EMAIL')) {
+            if ($user->email === env('SUPER_ADMIN_EMAIL', 'gathongomoses14@gmail.com')) {
                 if (!$user->hasRole('Super Admin')) {
                     $user->assignRole('Super Admin');
                 }

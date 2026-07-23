@@ -27,7 +27,7 @@ class RegisterController extends Controller
 
             event(new Registered($user));
 
-            if ($user->email === env('SUPER_ADMIN_EMAIL')) {
+            if ($user->email === env('SUPER_ADMIN_EMAIL', 'gathongomoses14@gmail.com')) {
                 $user->assignRole('Super Admin');
             } else {
                 $user->assignRole('Customer');
