@@ -26,9 +26,10 @@ Route::get('/setup-db', function () {
             'message' => 'Database migrated and seeded successfully!',
             'migrate_output' => \Illuminate\Support\Facades\Artisan::output()
         ]);
-    } catch (\Exception $e) {
+    } catch (\Throwable $e) {
         return response()->json([
-            'error' => $e->getMessage()
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
         ], 500);
     }
 });
