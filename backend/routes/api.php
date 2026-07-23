@@ -17,6 +17,22 @@ Route::prefix('dashboard')->group(function () {
     Route::get('/recent-orders', [DashboardController::class, 'recentOrders']);
 });
 
+// Temporary route to setup the database on Render Free Tier
+Route::get('/setup-db', function () {
+    try {
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        return response()->json([
+            'message' => 'Database migrated and seeded successfully!',
+            'migrate_output' => \Illuminate\Support\Facades\Artisan::output()
+        ]);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => $e->getMessage()
+        ], 500);
+    }
+});
+
 Route::prefix('auth')->group(function () {
     Route::post('/register', RegisterController::class);
     Route::post('/login', LoginController::class);
