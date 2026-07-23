@@ -50,6 +50,25 @@ export default function UsersManagementPage() {
     updateRoleMutation.mutate({ userId, role: newRole });
   };
 
+  const deleteUserMutation = useMutation({
+    mutationFn: async (userId: number) => {
+      await api.delete(`/users/${userId}`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      alert('User deleted successfully!');
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.message || 'Failed to delete user');
+    }
+  });
+
+  const handleDeleteUser = (userId: number, userName: string) => {
+    if (window.confirm(`Are you sure you want to permanently delete user ${userName}?`)) {
+      deleteUserMutation.mutate(userId);
+    }
+  };
+
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }}
@@ -95,7 +114,7 @@ export default function UsersManagementPage() {
                 <th className="px-6 py-4">User</th>
                 <th className="px-6 py-4">Current Role</th>
                 <th className="px-6 py-4">Joined Date</th>
-                <th className="px-6 py-4 text-right">Assign Role</th>
+                <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100 dark:divide-gray-700/50 text-sm text-gray-700 dark:text-slate-300">
@@ -145,16 +164,28 @@ export default function UsersManagementPage() {
                       {new Date(user.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <select
-                        className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-brand-500 transition-colors"
-                        value={user.role_names?.[0] || 'Customer'}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
-                        disabled={updateRoleMutation.isPending}
-                      >
-                        {roles.map((role: any) => (
-                          <option key={role.id} value={role.name}>{role.name}</option>
-                        ))}
-                      </select>
+                      <div className="flex items-center justify-end gap-2">
+                        <select
+                          className="bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 text-gray-900 dark:text-white rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-blue-500 dark:focus:border-brand-500 transition-colors"
+                          value={user.role_names?.[0] || 'Customer'}
+                          onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                          disabled={updateRoleMutation.isPending}
+                        >
+                          {roles.map((role: any) => (
+                            <option key={role.id} value={role.name}>{role.name}</option>
+                          ))}
+                        </select>
+                        <button
+                          onClick={() => handleDeleteUser(user.id, user.name)}
+                          disabled={deleteUserMutation.isPending}
+                          className="p-1.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 rounded-lg transition-colors"
+                          title="Delete User"
+                        >
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clipRule="evenodd" />
+                          </svg>
+                        </button>
+                      </div>
                     </td>
                   </motion.tr>
                 ))

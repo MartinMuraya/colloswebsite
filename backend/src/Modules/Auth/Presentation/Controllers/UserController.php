@@ -59,4 +59,37 @@ class UserController extends Controller
             'data' => $roles
         ]);
     }
+
+    public function destroy($id)
+    {
+        $user = User::findOrFail($id);
+
+        if (!auth()->user()->hasRole('Super Admin')) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Unauthorized. Only Super Admins can delete users.'
+            ], 403);
+        }
+
+        if ($user->hasRole('Super Admin') && User::role('Super Admin')->count() === 1) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cannot delete the only Super Admin.'
+            ], 403);
+        }
+
+        if ($user->id === auth()->id()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Cannot delete yourself.'
+            ], 403);
+        }
+
+        $user->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'User deleted successfully.'
+        ]);
+    }
 }

@@ -1,7 +1,19 @@
 import { motion } from 'framer-motion';
 import { Target, Award } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import api from '../../../lib/axios';
 
 export default function AboutUsPage() {
+  const { data: settingsData } = useQuery({
+    queryKey: ['settings'],
+    queryFn: async () => {
+      const response = await api.get('/settings');
+      return response.data;
+    },
+  });
+
+  const heroImage = settingsData?.about_hero_bg || "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop";
+
   return (
     <div className="py-24 bg-white dark:bg-gray-900 min-h-screen">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -23,7 +35,7 @@ export default function AboutUsPage() {
             viewport={{ once: true }}
           >
             <img 
-              src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop" 
+              src={heroImage} 
               alt="Our Warehouse" 
               className="rounded-3xl shadow-2xl border border-gray-100 dark:border-gray-800"
             />

@@ -9,7 +9,9 @@ import {
   Menu, 
   Zap,
   CreditCard,
-  Shield
+  Shield,
+  Image as ImageIcon,
+  LogOut
 } from 'lucide-react';
 
 export default function AdminLayout() {
@@ -26,6 +28,7 @@ export default function AdminLayout() {
     { name: 'Customers', icon: Users, path: '/dashboard/customers', show: true },
     { name: 'Payments', icon: CreditCard, path: '/dashboard/payments', show: true },
     { name: 'User Roles', icon: Shield, path: '/dashboard/users', show: isSuperAdmin },
+    { name: 'Content', icon: ImageIcon, path: '/dashboard/content', show: isSuperAdmin },
     { name: 'Settings', icon: Settings, path: '/dashboard/settings', show: true },
   ].filter(item => item.show);
 
@@ -92,6 +95,40 @@ export default function AdminLayout() {
             </NavLink>
           ))}
         </nav>
+
+        {/* User Profile Footer */}
+        <div className="p-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden shrink-0">
+              {user?.profile_picture ? (
+                <img src={user.profile_picture} alt={user?.name} className="w-full h-full object-cover" />
+              ) : (
+                <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                  {user?.name?.substring(0, 2).toUpperCase() || 'A'}
+                </span>
+              )}
+            </div>
+            <motion.div 
+              animate={{ opacity: isSidebarOpen ? 1 : 0, display: isSidebarOpen ? 'block' : 'none' }}
+              className="flex-1 min-w-0"
+            >
+              <p className="text-sm font-medium text-gray-900 dark:text-white truncate">{user?.name}</p>
+              <p className="text-xs text-gray-500 dark:text-slate-400 truncate">{user?.email}</p>
+            </motion.div>
+          </div>
+          <motion.button
+            animate={{ opacity: isSidebarOpen ? 1 : 0, display: isSidebarOpen ? 'flex' : 'none' }}
+            onClick={() => {
+              localStorage.removeItem('user');
+              localStorage.removeItem('auth_token');
+              window.location.href = '/login';
+            }}
+            className="w-full mt-4 flex items-center justify-center gap-2 px-4 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 rounded-xl transition-colors font-medium"
+          >
+            <LogOut className="w-4 h-4" />
+            Logout
+          </motion.button>
+        </div>
       </motion.aside>
 
       {/* Main Content */}

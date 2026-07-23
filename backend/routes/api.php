@@ -32,6 +32,7 @@ Route::prefix('settings')->group(function () {
     // Admin only
     Route::post('/', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateStoreSettings'])->middleware('auth:sanctum');
     Route::post('/profile', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateProfile'])->middleware('auth:sanctum');
+    Route::post('/cms', [\App\Modules\Settings\Presentation\Controllers\SettingsController::class, 'updateCmsSettings'])->middleware('auth:sanctum');
 });
 
 // Users & Roles Management (Super Admin / Admin)
@@ -39,6 +40,7 @@ Route::prefix('users')->middleware(['auth:sanctum'])->group(function () {
     Route::get('/', [\App\Modules\Auth\Presentation\Controllers\UserController::class, 'index']);
     Route::get('/roles', [\App\Modules\Auth\Presentation\Controllers\UserController::class, 'getRoles']);
     Route::post('/{id}/role', [\App\Modules\Auth\Presentation\Controllers\UserController::class, 'updateRole']);
+    Route::delete('/{id}', [\App\Modules\Auth\Presentation\Controllers\UserController::class, 'destroy']);
 });
 
 Route::post('/contact', [\App\Modules\Support\Presentation\Controllers\ContactController::class, 'send']);

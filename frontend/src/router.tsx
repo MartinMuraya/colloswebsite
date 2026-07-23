@@ -15,6 +15,7 @@ import AboutUsPage from './features/public/pages/AboutUsPage';
 import ContactUsPage from './features/public/pages/ContactUsPage';
 import PublicProductsPage from './features/public/pages/PublicProductsPage';
 import SettingsPage from './features/settings/pages/SettingsPage';
+import ContentManagementPage from './features/dashboard/pages/ContentManagementPage';
 
 export const router = createBrowserRouter([
   {
@@ -56,6 +57,10 @@ export const router = createBrowserRouter([
           {
             path: 'settings',
             element: <SettingsPage />,
+          },
+          {
+            path: 'content',
+            element: <ContentManagementPage />,
           }
         ],
       },

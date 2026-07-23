@@ -13,7 +13,16 @@ export default function HomePage() {
     },
   });
 
+  const { data: settingsData } = useQuery({
+    queryKey: ['settings'],
+    queryFn: async () => {
+      const response = await api.get('/settings');
+      return response.data;
+    },
+  });
+
   const products = responseData?.data?.slice(0, 4) || [];
+  const heroBg = settingsData?.home_hero_bg || "https://res.cloudinary.com/demo/image/upload/v1683120194/cld-sample-2.jpg";
 
   const features = [
     { icon: Zap, title: 'Premium Quality', desc: 'Sourced from top global manufacturers' },
@@ -26,7 +35,10 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-white dark:bg-gray-900 border-b border-gray-100 dark:border-gray-800">
-        <div className="absolute inset-0 bg-[url('https://res.cloudinary.com/demo/image/upload/v1683120194/cld-sample-2.jpg')] bg-cover bg-center opacity-5 dark:opacity-10" />
+        <div 
+          className="absolute inset-0 bg-cover bg-center opacity-5 dark:opacity-10" 
+          style={{ backgroundImage: `url(${heroBg})` }}
+        />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24 md:py-32 relative z-10">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <motion.div 
@@ -48,7 +60,7 @@ export default function HomePage() {
                 Nairobi's leading supplier of industrial and commercial electrical components. We provide the spark for your success.
               </p>
               <div className="flex flex-wrap gap-4">
-                <Link to="#products" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/30">
+                <Link to="/products" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 text-white font-medium hover:bg-blue-700 transition-all hover:scale-105 active:scale-95 shadow-lg shadow-blue-500/30">
                   Shop Catalog
                   <ArrowRight className="w-4 h-4" />
                 </Link>

@@ -82,4 +82,39 @@ class SettingsController extends Controller
             'user' => $user
         ]);
     }
+
+    /**
+     * Update CMS content (dynamic images and text)
+     */
+    public function updateCmsSettings(Request $request)
+    {
+        $settingsToUpdate = [];
+        $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
+
+        // Handle text fields (anything that is not a file)
+        foreach ($request->except(['_token', '_method']) as $key => $value) {
+            if (!$request->hasFile($key) && !is_array($value)) {
+                $settingsToUpdate[$key] = $value;
+            }
+        }
+
+        // Handle file uploads dynamically
+        foreach ($request->allFiles() as $key => $file) {
+            if ($file->isValid()) {
+                $uploadResult = $cloudinary->uploadApi()->upload($file->getRealPath(), [
+                    'folder' => 'cms'
+                ]);
+                $settingsToUpdate[$key] = $uploadResult['secure_url'];
+            }
+        }
+
+        foreach ($settingsToUpdate as $key => $value) {
+            Setting::updateOrCreate(['key' => $key], ['value' => $value]);
+        }
+
+        return response()->json([
+            'message' => 'CMS settings updated successfully.',
+            'settings' => Setting::all()->pluck('value', 'key')
+        ]);
+    }
 }
