@@ -13,7 +13,12 @@ class SocialAuthController extends Controller
 {
     public function redirect()
     {
-        return Socialite::driver('google')->stateless()->redirect();
+        try {
+            return Socialite::driver('google')->stateless()->redirect();
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::error('Google OAuth Redirect Error: ' . $e->getMessage());
+            return redirect()->to(env('FRONTEND_URL', 'http://localhost:5173') . '/login?error=' . urlencode('redirect_failed: ' . $e->getMessage()));
+        }
     }
 
     public function callback()

@@ -58,8 +58,10 @@ Route::prefix('auth')->group(function () {
     Route::post('/login', LoginController::class);
     
     // OAuth
-    Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
-    Route::get('/google/callback', [SocialAuthController::class, 'callback']);
+    Route::middleware('web')->group(function () {
+        Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
+        Route::get('/google/callback', [SocialAuthController::class, 'callback']);
+    });
     
     // Verification
     Route::post('/email/verify/{id}/{hash}', [VerificationController::class, 'verify']);
