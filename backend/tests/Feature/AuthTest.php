@@ -17,18 +17,16 @@ class AuthTest extends TestCase
     {
         parent::setUp();
         // Create default roles needed for registration
-        Role::create(['name' => 'customer']);
-        Role::create(['name' => 'admin']);
-        Role::create(['name' => 'super_admin']);
+        Role::create(['name' => 'Customer']);
+        Role::create(['name' => 'Admin']);
+        Role::create(['name' => 'Super Admin']);
     }
 
     public function test_user_can_register()
     {
         $payload = [
-            'first_name' => 'John',
-            'last_name' => 'Doe',
+            'name' => 'John Doe',
             'email' => 'john.doe@example.com',
-            'phone_number' => '+254712345678',
             'password' => 'password123',
             'password_confirmation' => 'password123',
         ];
@@ -37,7 +35,7 @@ class AuthTest extends TestCase
 
         $response->assertStatus(201)
                  ->assertJsonStructure([
-                     'user' => ['id', 'first_name', 'last_name', 'email', 'phone_number'],
+                     'user' => ['id', 'name', 'email'],
                      'token'
                  ]);
 
@@ -52,7 +50,7 @@ class AuthTest extends TestCase
             'email' => 'jane.doe@example.com',
             'password' => Hash::make('securepassword'),
         ]);
-        $user->assignRole('customer');
+        $user->assignRole('Customer');
 
         $payload = [
             'email' => 'jane.doe@example.com',
@@ -84,6 +82,6 @@ class AuthTest extends TestCase
         $response = $this->postJson('/api/auth/login', $payload);
 
         $response->assertStatus(401)
-                 ->assertJsonFragment(['message' => 'Invalid login credentials.']);
+                 ->assertJsonFragment(['message' => 'The provided credentials do not match our records.']);
     }
 }
