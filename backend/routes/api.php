@@ -63,8 +63,8 @@ Route::get('/setup-db', function () {
 });
 
 Route::prefix('auth')->group(function () {
-    Route::post('/register', RegisterController::class);
-    Route::post('/login', LoginController::class);
+    Route::post('/register', RegisterController::class)->middleware('throttle:10,1');
+    Route::post('/login', LoginController::class)->middleware('throttle:10,1');
     
     // OAuth
     Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);

@@ -47,6 +47,5 @@ jobs:
         touch database/database.sqlite
     - name: Run Migrations
       run: php artisan migrate --force
-    # Uncomment when tests are added
-    # - name: Run PHPUnit
-    #   run: vendor/bin/phpunit
+    - name: Run PHPUnit
+      run: vendor/bin/phpunit

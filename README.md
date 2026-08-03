@@ -3,6 +3,7 @@
 [![Frontend: React + Vite](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-blue?style=for-the-badge&logo=react)](https://react.dev)
 [![Backend: Laravel 11](https://img.shields.io/badge/Backend-Laravel%2011-red?style=for-the-badge&logo=laravel)](https://laravel.com)
 [![Styling: Tailwind CSS](https://img.shields.io/badge/Styling-Tailwind%20CSS-06B6D4?style=for-the-badge&logo=tailwindcss)](https://tailwindcss.com)
+[![CI/CD: GitHub Actions](https://img.shields.io/badge/CI/CD-GitHub%20Actions-2088FF?style=for-the-badge&logo=github-actions)](https://github.com/features/actions)
 
 Collos Hardware is a premium, full-stack B2B and B2C E-commerce platform designed for commercial and industrial electrical components in East Africa. It features a decoupled architecture with a robust Laravel REST API and a highly reactive React Single Page Application (SPA).
 
@@ -20,23 +21,24 @@ graph LR
     A -->|Serves Images| D
 ```
 
-### 1. Frontend (Vite + React)
-* **Framework:** React 18 powered by Vite for instant Hot Module Replacement (HMR) and optimized builds.
+### 1. Frontend (React 19 + Vite)
+* **Framework:** React 19 powered by Vite for instant Hot Module Replacement (HMR) and optimized builds.
 * **Routing:** `react-router-dom` utilizing nested layouts to guard Admin and Customer boundaries.
 * **State Management:**
   * **Server State:** `@tanstack/react-query` handles caching and background syncs.
-  * **Global State:** Redux Toolkit manages complex state like the Shopping Cart.
-* **UI/UX:** Tailwind CSS combined with Framer Motion for premium micro-animations and responsive layouts.
+  * **Global State:** Redux Toolkit handles persistent app state (Shopping Cart).
+* **UI/UX:** Tailwind CSS combined with Framer Motion for premium micro-animations. Forms are robustly handled by `react-hook-form` and validated strictly via `zod`.
 * **Authentication:** Stateless token persistence in `localStorage`, injected into an Axios instance via request interceptors.
 
 ### 2. Backend (Laravel 11)
 * **Architecture:** Modular API design (Auth, Catalog, Users, Settings, Payments).
 * **Security:** 
   * **Sanctum:** Issues stateful Bearer Tokens for mobile-first API authentication.
-  * **Spatie Permissions:** Enforces strict Role-Based Access Control (RBAC) via middleware. Super Admins possess elevated destructive capabilities (e.g., deleting users).
+  * **Spatie Permissions:** Enforces strict Role-Based Access Control (RBAC) via middleware. Super Admins possess elevated destructive capabilities.
 * **Integrations:**
   * **Google Socialite:** OAuth 2.0 flow for instant Registration/Login.
   * **Cloudinary:** Direct API integration for storing dynamic CMS content and avatars.
+  * **M-Pesa:** Safaricom STK Push integration for automated regional payments.
 * **Database:** Relational MySQL schema managing foreign constraints between users, roles, products, and categories.
 
 ---
@@ -48,14 +50,15 @@ graph LR
 * **Persistent Avatar Profiles:** Interactive profile drop-downs integrated into both the public-facing application and the internal admin layout.
 * **Product Catalog:** Robust inventory system with category management, pricing, and stock status tracking.
 * **Dark Mode Native:** Global theme context allows users to toggle between meticulously designed light and dark palettes.
+* **Automated Payments:** M-Pesa STK push workflow with callback listeners.
 
 ---
 
 ## 🛠️ Local Development Setup
 
 ### Prerequisites
-* Node.js (v18+)
-* PHP (v8.2+)
+* Node.js (v20+)
+* PHP (v8.3+)
 * Composer
 * MySQL Server
 
@@ -67,7 +70,7 @@ cp .env.example .env
 php artisan key:generate
 ```
 **Configure your `.env`:**
-Update the database credentials and ensure Cloudinary credentials are set.
+Update the database credentials and ensure Cloudinary/M-Pesa credentials are set.
 ```bash
 php artisan migrate --seed
 php artisan serve
@@ -88,9 +91,10 @@ npm run dev
 
 ---
 
-## 📜 Deployment Infrastructure
+## 📜 Deployment Infrastructure & CI/CD
 
 * **Frontend:** Deployed automatically to **Vercel** utilizing their Edge Network for lightning-fast asset delivery.
 * **Backend:** Hosted on **Render** utilizing Docker containers for PHP-FPM.
 * **Database:** Managed MySQL instance hosted on **Aiven Cloud**.
 * **Assets:** Served globally via **Cloudinary CDN**.
+* **CI/CD Pipeline:** GitHub Actions automatically verify React builds and execute Laravel environment checks upon PR/Push to `main`.
