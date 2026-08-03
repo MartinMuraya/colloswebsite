@@ -35,10 +35,12 @@ graph LR
 * **Security:** 
   * **Sanctum:** Issues stateful Bearer Tokens for mobile-first API authentication.
   * **Spatie Permissions:** Enforces strict Role-Based Access Control (RBAC) via middleware. Super Admins possess elevated destructive capabilities.
+  * **Rate Limiting:** Strict throttling middleware protecting critical authentication endpoints against brute-force attacks.
 * **Integrations:**
   * **Google Socialite:** OAuth 2.0 flow for instant Registration/Login.
   * **Cloudinary:** Direct API integration for storing dynamic CMS content and avatars.
   * **M-Pesa:** Safaricom STK Push integration for automated regional payments.
+  * **Sentry:** Real-time production error monitoring and stack-trace capturing.
 * **Database:** Relational MySQL schema managing foreign constraints between users, roles, products, and categories.
 
 ---
@@ -97,4 +99,4 @@ npm run dev
 * **Backend:** Hosted on **Render** utilizing Docker containers for PHP-FPM.
 * **Database:** Managed MySQL instance hosted on **Aiven Cloud**.
 * **Assets:** Served globally via **Cloudinary CDN**.
-* **CI/CD Pipeline:** GitHub Actions automatically verify React builds and execute Laravel environment checks upon PR/Push to `main`.
+* **CI/CD Pipeline:** GitHub Actions automatically verify React builds (with Vite code splitting) and execute Laravel PHPUnit feature tests upon PR/Push to `main`.

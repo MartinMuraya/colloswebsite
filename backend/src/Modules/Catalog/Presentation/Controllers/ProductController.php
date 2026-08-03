@@ -4,36 +4,26 @@ namespace App\Modules\Catalog\Presentation\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Product;
+use App\Data\ProductData;
 use Illuminate\Http\Request;
+use App\Services\ProductService;
 
 class ProductController extends Controller
 {
+    public function __construct(
+        protected ProductService $productService
+    ) {}
     public function index(Request $request)
     {
-        $query = Product::query()->with('category');
+        $products = $this->productService->getAllProducts($request->search);
 
-        if ($request->has('search') && !empty($request->search)) {
-            $search = $request->search;
-            $query->where('name', 'like', "%{$search}%")
-                  ->orWhere('sku', 'like', "%{$search}%");
-        }
+        return response()->json(['data' => ProductData::collect($products)]);
+    }
 
-        // Return all products for the catalog without pagination for now to fit simple UI
-        $products = $query->get()->map(function ($product) {
-            return [
-                'id' => (string) $product->id,
-                'name' => $product->name,
-                'sku' => $product->sku,
-                'price' => (float) $product->price,
-                'stock' => $product->stock,
-                'status' => $product->status,
-                'image_url' => $product->image_url,
-                'category' => $product->category->name ?? 'Uncategorized',
-                'category_id' => $product->category_id,
-            ];
-        });
-
-        return response()->json(['data' => $products]);
+    public function show($id)
+    {
+        $product = $this->productService->getProduct($id);
+        return response()->json(['product' => ProductData::from($product)]);
     }
 
     public function store(Request $request)
@@ -48,17 +38,8 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        if ($request->hasFile('image')) {
-            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
-            $uploadResult = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'products'
-            ]);
-            $validated['image_url'] = $uploadResult['secure_url'];
-        }
-        unset($validated['image']);
-
-        $product = Product::create($validated);
-        return response()->json(['message' => 'Product created', 'product' => $product], 201);
+        $product = $this->productService->createProduct($validated, $request->file('image'));
+        return response()->json(['message' => 'Product created', 'product' => ProductData::from($product)], 201);
     }
 
     public function update(Request $request, $id)
@@ -75,23 +56,13 @@ class ProductController extends Controller
             'image' => 'nullable|image|max:2048'
         ]);
 
-        if ($request->hasFile('image')) {
-            $cloudinary = new \Cloudinary\Cloudinary(env('CLOUDINARY_URL'));
-            $uploadResult = $cloudinary->uploadApi()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'products'
-            ]);
-            $validated['image_url'] = $uploadResult['secure_url'];
-        }
-        unset($validated['image']);
-
-        $product->update($validated);
-        return response()->json(['message' => 'Product updated', 'product' => $product]);
+        $product = $this->productService->updateProduct($id, $validated, $request->file('image'));
+        return response()->json(['message' => 'Product updated', 'product' => ProductData::from($product)]);
     }
 
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
-        $product->delete();
+        $this->productService->deleteProduct($id);
         return response()->json(['message' => 'Product deleted']);
     }
 }

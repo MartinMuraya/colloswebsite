@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Auth\Events\Registered;
+use App\Data\UserData;
 
 class RegisterController extends Controller
 {
@@ -27,11 +28,7 @@ class RegisterController extends Controller
 
             event(new Registered($user));
 
-            if ($user->email === env('SUPER_ADMIN_EMAIL', 'gathongomoses14@gmail.com')) {
-                $user->assignRole('Super Admin');
-            } else {
-                $user->assignRole('Customer');
-            }
+            $user->assignRole('Customer');
 
             $token = $user->createToken('auth_token')->plainTextToken;
             $user->load('roles');
@@ -39,7 +36,7 @@ class RegisterController extends Controller
             return response()->json([
                 'message' => 'User registered successfully.',
                 'token' => $token,
-                'user' => $user
+                'user' => UserData::from($user)
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

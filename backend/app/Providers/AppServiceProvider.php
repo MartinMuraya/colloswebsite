@@ -12,7 +12,14 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind(
+            \App\Repositories\Contracts\ProductRepositoryInterface::class,
+            \App\Repositories\Eloquent\ProductRepository::class
+        );
+        $this->app->bind(
+            \App\Services\Contracts\PaymentGatewayInterface::class,
+            \App\Services\Gateways\MpesaGateway::class
+        );
     }
 
     /**

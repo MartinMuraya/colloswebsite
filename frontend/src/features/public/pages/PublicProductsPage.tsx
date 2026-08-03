@@ -140,7 +140,10 @@ export default function PublicProductsPage() {
                 className="bg-white dark:bg-gray-800 rounded-3xl border border-gray-100 dark:border-gray-700 overflow-hidden hover:shadow-xl dark:hover:shadow-brand-500/10 transition-all duration-300 group flex flex-col"
               >
                 {/* Product Image */}
-                <div className="relative h-56 bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden">
+                <div 
+                  onClick={() => navigate(`/products/${product.id}`)}
+                  className="relative h-56 bg-gray-50 dark:bg-gray-900 flex items-center justify-center overflow-hidden cursor-pointer"
+                >
                   {product.image_url ? (
                     <img 
                       src={product.image_url} 
@@ -172,7 +175,10 @@ export default function PublicProductsPage() {
                 {/* Product Info */}
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex justify-between items-start mb-2">
-                    <h3 className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2">
+                    <h3 
+                      onClick={() => navigate(`/products/${product.id}`)}
+                      className="text-lg font-bold text-gray-900 dark:text-white line-clamp-2 cursor-pointer hover:text-brand-500 transition-colors"
+                    >
                       {product.name}
                     </h3>
                   </div>

@@ -21,14 +21,15 @@ class DatabaseSeeder extends Seeder
             RolesAndPermissionsSeeder::class,
         ]);
 
-        // Users
-        User::firstOrCreate(
-            ['email' => 'admin@example.com'],
+        // Users (Super Admin)
+        $superAdmin = User::firstOrCreate(
+            ['email' => env('SUPER_ADMIN_EMAIL', 'admin@colloshardware.com')],
             [
-                'name' => 'Admin User',
-                'password' => bcrypt('password'),
+                'name' => 'Collos Super Admin',
+                'password' => bcrypt(env('SUPER_ADMIN_PASSWORD', 'SecurePassword123!')),
             ]
         );
+        $superAdmin->assignRole('Super Admin');
 
         // Categories
         $categories = [
@@ -63,12 +64,18 @@ class DatabaseSeeder extends Seeder
             );
         }
 
+        // Customer for Orders
+        $customer = User::firstOrCreate(
+            ['email' => 'customer@example.com'],
+            ['name' => 'Test Customer', 'password' => bcrypt('password')]
+        );
+        $customer->assignRole('Customer');
+
         // Orders
         for ($i = 1; $i <= 5; $i++) {
             $order = Order::create([
                 'reference' => 'ORD-' . strtoupper(Str::random(6)),
-                'customer_name' => 'Customer ' . $i,
-                'customer_phone' => '25470000000' . $i,
+                'user_id' => $customer->id,
                 'total_amount' => 0, // Calculate later
                 'status' => ['pending', 'paid', 'completed'][rand(0, 2)],
             ]);

@@ -5,6 +5,7 @@ namespace App\Modules\Auth\Presentation\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Data\UserData;
 
 class LoginController extends Controller
 {
@@ -18,10 +19,8 @@ class LoginController extends Controller
         if (Auth::attempt($credentials)) {
             $user = Auth::user();
             
-            // Assign Super Admin role if it matches env and they don't have it
-            if ($user->email === env('SUPER_ADMIN_EMAIL', 'gathongomoses14@gmail.com') && !$user->hasRole('Super Admin')) {
-                $user->assignRole('Super Admin');
-            } elseif (!$user->hasRole('Super Admin') && !$user->hasRole('Admin') && !$user->hasRole('Customer')) {
+            // Assign default Customer role if they have no roles
+            if ($user->roles()->count() === 0) {
                 $user->assignRole('Customer');
             }
 
@@ -31,7 +30,7 @@ class LoginController extends Controller
             return response()->json([
                 'message' => 'Login successful',
                 'token' => $token,
-                'user' => $user,
+                'user' => UserData::from($user),
             ], 200);
         }
 
