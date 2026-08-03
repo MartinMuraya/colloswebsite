@@ -61,9 +61,12 @@ class AuthTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
-                     'user' => ['id', 'email'],
-                     'token',
-                     'roles'
+                     'user' => [
+                         'id', 
+                         'email',
+                         'roles'
+                     ],
+                     'token'
                  ]);
     }
 
