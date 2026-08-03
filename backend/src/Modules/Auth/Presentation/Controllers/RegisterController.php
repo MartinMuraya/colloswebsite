@@ -36,7 +36,7 @@ class RegisterController extends Controller
             return response()->json([
                 'message' => 'User registered successfully.',
                 'token' => $token,
-                'user' => UserData::from($user)
+                'user' => UserData::fromModel($user)
             ], 201);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 400);

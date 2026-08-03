@@ -31,7 +31,7 @@ class AuthTest extends TestCase
             'password_confirmation' => 'password123',
         ];
 
-        $response = $this->postJson('/api/auth/register', $payload);
+        $response = $this->postJson('/api/v1/auth/register', $payload);
 
         $response->assertStatus(201)
                  ->assertJsonStructure([
@@ -57,7 +57,7 @@ class AuthTest extends TestCase
             'password' => 'securepassword',
         ];
 
-        $response = $this->postJson('/api/auth/login', $payload);
+        $response = $this->postJson('/api/v1/auth/login', $payload);
 
         $response->assertStatus(200)
                  ->assertJsonStructure([
@@ -82,7 +82,7 @@ class AuthTest extends TestCase
             'password' => 'wrongpassword',
         ];
 
-        $response = $this->postJson('/api/auth/login', $payload);
+        $response = $this->postJson('/api/v1/auth/login', $payload);
 
         $response->assertStatus(401)
                  ->assertJsonFragment(['message' => 'The provided credentials do not match our records.']);
