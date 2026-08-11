@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut, ChevronDown } from 'lucide-react';
+import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut, ChevronDown, LayoutDashboard, ShoppingBag, Settings as SettingsIcon } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -14,8 +14,21 @@ export default function PublicLayout() {
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<{id: number, text: string}[]>([
+    { id: 1, text: 'Welcome back! Checkout our new features. 🚀' }
+  ]);
   const dispatch = useDispatch();
   const location = useLocation();
+
+  useEffect(() => {
+    if (notifications.length > 0) {
+      const timer = setTimeout(() => {
+        setNotifications([]);
+      }, 15000);
+      return () => clearTimeout(timer);
+    }
+  }, [notifications]);
   const [user, setUser] = useState<any>(null);
 
   const { data: productCategories } = useQuery({
@@ -159,26 +172,52 @@ export default function PublicLayout() {
               {user ? (
                 <>
                   <button
-                    onClick={() => {
-                      const el = document.getElementById('public-notifications');
-                      if (el) el.classList.toggle('hidden');
-                    }}
+                    onClick={() => setShowNotifications(!showNotifications)}
                     className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 relative transition-colors"
                   >
                     <Bell className="w-5 h-5" />
-                    <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                    {notifications.length > 0 && (
+                      <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                    )}
                   </button>
 
-                  <div id="public-notifications" className="hidden absolute top-14 right-20 w-64 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50">
-                    <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-                      <h3 className="text-gray-900 dark:text-white font-medium">Notifications</h3>
-                    </div>
-                    <div className="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">
-                      You're all caught up!
-                      <br />
-                      <span className="text-xs text-gray-400 dark:text-gray-500 mt-1 block">No new notifications.</span>
-                    </div>
-                  </div>
+                  <AnimatePresence>
+                    {showNotifications && (
+                      <motion.div 
+                        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                        className="absolute top-14 right-20 w-72 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50"
+                      >
+                        <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex justify-between items-center">
+                          <h3 className="text-gray-900 dark:text-white font-medium text-sm">Notifications</h3>
+                          {notifications.length > 0 && (
+                            <button onClick={() => setNotifications([])} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">Clear all</button>
+                          )}
+                        </div>
+                        <div className="p-2 max-h-[300px] overflow-y-auto">
+                          {notifications.length > 0 ? (
+                            notifications.map(notif => (
+                              <div key={notif.id} className="p-3 mb-2 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 flex justify-between items-start gap-3 relative group">
+                                <p className="text-sm text-gray-700 dark:text-gray-300 pr-4">{notif.text}</p>
+                                <button 
+                                  onClick={() => setNotifications(notifications.filter(n => n.id !== notif.id))}
+                                  className="absolute top-2 right-2 p-1 rounded-md text-gray-400 hover:text-gray-900 hover:bg-gray-200 dark:hover:bg-gray-700 dark:hover:text-white transition-colors opacity-0 group-hover:opacity-100"
+                                >
+                                  <X className="w-3 h-3" />
+                                </button>
+                              </div>
+                            ))
+                          ) : (
+                            <div className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm flex flex-col items-center">
+                              <Bell className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-2" />
+                              You're all caught up!
+                            </div>
+                          )}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
 
                   <button
                     onClick={() => dispatch(toggleCart())}
@@ -192,12 +231,6 @@ export default function PublicLayout() {
                     )}
                   </button>
                   <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
-                    <Link 
-                      to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
-                      className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mr-2"
-                    >
-                      Dashboard
-                    </Link>
                     <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden cursor-pointer group relative">
                       {user.profile_picture ? (
                         <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
@@ -206,14 +239,40 @@ export default function PublicLayout() {
                           {user.name?.substring(0, 2).toUpperCase() || 'U'}
                         </span>
                       )}
-                      <div className="absolute top-10 right-0 hidden group-hover:block bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl w-48 z-50 py-2">
-                        <div className="px-4 py-2 border-b border-gray-100 dark:border-gray-700 mb-2">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white">{user.name}</p>
-                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                      
+                      {/* Enhanced Profile Dropdown */}
+                      <div className="absolute top-10 right-0 hidden group-hover:block pt-2">
+                        <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl w-56 z-50 overflow-hidden">
+                          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.name}</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                          </div>
+                          <div className="p-2 space-y-1">
+                            <Link 
+                              to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
+                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                            >
+                              <LayoutDashboard className="w-4 h-4" /> Dashboard
+                            </Link>
+                            <Link 
+                              to="/customer-dashboard?tab=orders"
+                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                            >
+                              <ShoppingBag className="w-4 h-4" /> My Orders
+                            </Link>
+                            <Link 
+                              to="/customer-dashboard?tab=settings"
+                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                            >
+                              <SettingsIcon className="w-4 h-4" /> Settings
+                            </Link>
+                          </div>
+                          <div className="p-2 border-t border-gray-100 dark:border-gray-700">
+                            <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3">
+                              <LogOut className="w-4 h-4" /> Logout
+                            </button>
+                          </div>
                         </div>
-                        <button onClick={handleLogout} className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/10 flex items-center gap-2">
-                          <LogOut className="w-4 h-4" /> Logout
-                        </button>
                       </div>
                     </div>
                   </div>
