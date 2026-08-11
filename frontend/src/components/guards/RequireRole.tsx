@@ -15,7 +15,7 @@ const RequireRole: React.FC<RequireRoleProps> = ({ allowedRoles, children }) => 
 
   try {
     const user = JSON.parse(userStr);
-    const userRoles = user.roles?.map((r: any) => r.name) || [];
+    const userRoles = user.role_names || [];
     
     const hasRole = allowedRoles.some(role => userRoles.includes(role));
     

@@ -1,16 +1,18 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut } from 'lucide-react';
+import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut, Facebook, Twitter, Instagram } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../contexts/ThemeContext';
-import { useSelector } from 'react-redux';
+import api from '../../../lib/axios';
+import { useSelector, useDispatch } from 'react-redux';
 import type { RootState } from '../../../store';
+import { toggleCart } from '../../../store/slices/cartSlice';
 import CartDrawer from '../../catalog/components/CartDrawer';
 
 export default function PublicLayout() {
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const dispatch = useDispatch();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
 
@@ -28,8 +30,14 @@ export default function PublicLayout() {
     }
   }, []);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (e) {
+      console.error('Logout error', e);
+    }
     localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
     setUser(null);
     window.location.href = '/login';
   };
@@ -59,7 +67,7 @@ export default function PublicLayout() {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
                 <Zap className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-xl text-gray-900 dark:text-white tracking-tight">Collos Hardware</span>
+              <span className="font-bold text-xl text-gray-900 dark:text-white tracking-tight">Rada bro..mali ni yako!!usiwe na wasiswasi.</span>
             </Link>
 
             {/* Desktop Navigation - Center */}
@@ -68,9 +76,8 @@ export default function PublicLayout() {
                 <Link
                   key={item.name}
                   to={item.href}
-                  className={`text-sm font-semibold transition-all hover:text-blue-600 ${
-                    isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                  }`}
+                  className={`text-sm font-semibold transition-all hover:text-blue-600 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
+                    }`}
                 >
                   {item.name}
                 </Link>
@@ -89,7 +96,7 @@ export default function PublicLayout() {
 
               {user ? (
                 <>
-                  <button 
+                  <button
                     onClick={() => {
                       const el = document.getElementById('public-notifications');
                       if (el) el.classList.toggle('hidden');
@@ -111,8 +118,8 @@ export default function PublicLayout() {
                     </div>
                   </div>
 
-                  <button 
-                    onClick={() => setIsCartOpen(true)}
+                  <button
+                    onClick={() => dispatch(toggleCart())}
                     className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 relative transition-colors mr-2"
                   >
                     <ShoppingCart className="w-5 h-5" />
@@ -146,14 +153,14 @@ export default function PublicLayout() {
                 </>
               ) : (
                 <>
-                  <Link 
-                    to="/login" 
+                  <Link
+                    to="/login"
                     className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
                   >
                     Log In
                   </Link>
-                  <Link 
-                    to="/register" 
+                  <Link
+                    to="/register"
                     className="text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-xl transition-all shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Sign Up
@@ -170,8 +177,8 @@ export default function PublicLayout() {
               >
                 {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
               </button>
-              <button 
-                onClick={() => setIsCartOpen(true)}
+              <button
+                onClick={() => dispatch(toggleCart())}
                 className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 transition-colors relative"
               >
                 <ShoppingCart className="w-5 h-5" />
@@ -206,16 +213,15 @@ export default function PublicLayout() {
                     key={item.name}
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-4 py-3 rounded-xl text-base font-semibold transition-colors ${
-                      isActive(item.href)
+                    className={`block px-4 py-3 rounded-xl text-base font-semibold transition-colors ${isActive(item.href)
                         ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
                         : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                    }`}
+                      }`}
                   >
                     {item.name}
                   </Link>
                 ))}
-                
+
                 <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
                   {user ? (
                     <button
@@ -252,79 +258,77 @@ export default function PublicLayout() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col relative w-full h-full max-w-full">
         <Outlet />
-      </main>
-
-      {/* Footer */}
-      <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900 transition-colors mt-auto">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="col-span-1 md:col-span-2">
-              <Link to="/" className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-                  <Zap className="w-5 h-5 text-white" />
+      
+        {/* Footer */}
+        <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900 transition-colors mt-auto">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="col-span-1 md:col-span-2">
+                <Link to="/" className="flex items-center gap-2 mb-4">
+                  <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <Zap className="w-5 h-5 text-white" />
+                  </div>
+                  <span className="font-bold text-xl text-gray-900 dark:text-white">Collos Hardware</span>
+                </Link>
+                <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm mb-6">
+                  Your premier source for high-quality electrical and hardware supplies. Powering homes and industries with reliable components since 2010.
+                </p>
+                <div className="flex gap-4">
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                    <Facebook className="w-4 h-4" />
+                  </a>
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
+                    <Twitter className="w-4 h-4" />
+                  </a>
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors">
+                    <Instagram className="w-4 h-4" />
+                  </a>
                 </div>
-                <span className="font-bold text-xl text-gray-900 dark:text-white">Collos Hardware</span>
-              </Link>
-              <p className="text-gray-500 dark:text-gray-400 text-sm max-w-sm mb-6">
-                Your premier source for high-quality electrical and hardware supplies. Powering homes and industries with reliable components since 2010.
-              </p>
-              <div className="flex gap-4">
-                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  FB
-                </a>
-                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                  TW
-                </a>
-                <a href="#" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors">
-                  IG
-                </a>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
+                <ul className="space-y-3 text-sm">
+                  <li><Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link></li>
+                  <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">About Us</Link></li>
+                  <li><Link to="/contact" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</Link></li>
+                  <li><Link to="/dashboard" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Admin Dashboard</Link></li>
+                </ul>
+              </div>
+
+              <div>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Contact Info</h3>
+                <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
+                  <li className="flex items-start gap-3">
+                    <MapPin className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <span>Industrial Area, Enterprise Road<br />Nairobi, Kenya</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Phone className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <span>+254 700 000000</span>
+                  </li>
+                  <li className="flex items-center gap-3">
+                    <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
+                    <span>sales@colloshardware.com</span>
+                  </li>
+                </ul>
               </div>
             </div>
-            
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
-              <ul className="space-y-3 text-sm">
-                <li><Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link></li>
-                <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">About Us</Link></li>
-                <li><Link to="/contact" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</Link></li>
-                <li><Link to="/login" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Admin Dashboard</Link></li>
-              </ul>
-            </div>
 
-            <div>
-              <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Contact Info</h3>
-              <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
-                <li className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>Industrial Area, Enterprise Road<br/>Nairobi, Kenya</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Phone className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>+254 700 000000</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                  <span>sales@colloshardware.com</span>
-                </li>
-              </ul>
+            <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-900 flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                © {new Date().getFullYear()} Collos Hardware. All rights reserved.
+              </p>
+              <div className="flex gap-6 mt-4 md:mt-0 text-sm text-gray-500 dark:text-gray-400">
+                <Link to="/privacy" className="hover:text-blue-600">Privacy Policy</Link>
+                <Link to="/terms" className="hover:text-blue-600">Terms of Service</Link>
+              </div>
             </div>
           </div>
-          
-          <div className="mt-12 pt-8 border-t border-gray-100 dark:border-gray-900 flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
-              © {new Date().getFullYear()} Collos Hardware. All rights reserved.
-            </p>
-            <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-              <a href="#" className="hover:text-blue-600">Privacy Policy</a>
-              <a href="#" className="hover:text-blue-600">Terms of Service</a>
-            </div>
-          </div>
-        </div>
-      </footer>
-      <CartDrawer 
-        isOpen={isCartOpen} 
-        onClose={() => setIsCartOpen(false)} 
-      />
+        </footer>
+      </main>
+
+      <CartDrawer />
     </div>
   );
 }

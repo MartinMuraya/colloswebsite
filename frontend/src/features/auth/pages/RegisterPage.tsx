@@ -19,10 +19,17 @@ export default function RegisterPage() {
       return response.data;
     },
     onSuccess: (data) => {
-      // Save user and token to localStorage
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      navigate('/dashboard');
+      
+      const userRoles = data.user.role_names || [];
+      const isAdmin = userRoles.includes('Super Admin') || userRoles.includes('Admin');
+      
+      if (isAdmin) {
+        navigate('/dashboard');
+      } else {
+        navigate('/customer-dashboard');
+      }
     },
     onError: (error: any) => {
       setErrorMsg(error.response?.data?.message || 'Registration failed. Please try again.');

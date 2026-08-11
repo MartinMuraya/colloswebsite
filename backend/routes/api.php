@@ -15,7 +15,7 @@ Route::prefix('v1')->group(function () {
         return $request->user();
     })->middleware('auth:sanctum');
 
-    Route::prefix('dashboard')->group(function () {
+    Route::prefix('dashboard')->middleware('auth:sanctum')->group(function () {
         Route::get('/stats', [DashboardController::class, 'stats']);
         Route::get('/recent-orders', [DashboardController::class, 'recentOrders']);
     });
@@ -32,8 +32,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('orders')->group(function () {
         Route::get('/', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'index'])->middleware('auth:sanctum');
         Route::get('/my/history', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'myOrders'])->middleware('auth:sanctum');
-        Route::post('/', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'store']);
-        Route::get('/{reference}', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'show']);
+        Route::post('/', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'store'])->middleware('auth:sanctum');
+        Route::get('/{reference}', [\App\Modules\Catalog\Presentation\Controllers\OrderController::class, 'show'])->middleware('auth:sanctum');
     });
 
     Route::prefix('settings')->group(function () {
@@ -56,6 +56,9 @@ Route::prefix('v1')->group(function () {
 
     // Temporary route to setup the database on Render Free Tier
     Route::get('/setup-db', function () {
+        if (app()->environment('production')) {
+            abort(403, 'Unauthorized in production.');
+        }
         try {
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
@@ -69,12 +72,16 @@ Route::prefix('v1')->group(function () {
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
-    });
+    })->middleware('auth:sanctum');
 
     Route::prefix('auth')->group(function () {
         Route::post('/register', RegisterController::class)->middleware('throttle:10,1');
         Route::post('/login', LoginController::class)->middleware('throttle:10,1');
+        Route::post('/logout', \App\Modules\Auth\Presentation\Controllers\LogoutController::class)->middleware('auth:sanctum');
         
+        Route::post('/forgot-password', [\App\Modules\Auth\Presentation\Controllers\PasswordResetController::class, 'sendResetLink']);
+        Route::post('/reset-password', [\App\Modules\Auth\Presentation\Controllers\PasswordResetController::class, 'reset'])->name('password.reset');
+
         // OAuth
         Route::get('/google/redirect', [SocialAuthController::class, 'redirect']);
         Route::get('/google/callback', [SocialAuthController::class, 'callback']);

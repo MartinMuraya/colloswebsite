@@ -17,6 +17,11 @@ const VerifyEmailPage = React.lazy(() => import('./features/auth/pages/VerifyEma
 const GoogleCallback = React.lazy(() => import('./features/auth/pages/GoogleCallback'));
 const CheckoutPage = React.lazy(() => import('./features/public/pages/CheckoutPage'));
 const CustomerDashboard = React.lazy(() => import('./features/customers/pages/CustomerDashboard'));
+const NotFoundPage = React.lazy(() => import('./features/public/pages/NotFoundPage'));
+const PrivacyPolicyPage = React.lazy(() => import('./features/public/pages/PrivacyPolicyPage'));
+const TermsOfServicePage = React.lazy(() => import('./features/public/pages/TermsOfServicePage'));
+const ForgotPasswordPage = React.lazy(() => import('./features/auth/pages/ForgotPasswordPage'));
+const ResetPasswordPage = React.lazy(() => import('./features/auth/pages/ResetPasswordPage'));
 
 const DashboardPage = React.lazy(() => import('./features/dashboard/pages/DashboardPage'));
 const ProductCatalogPage = React.lazy(() => import('./features/catalog/pages/ProductCatalogPage'));
@@ -45,9 +50,14 @@ export const router = createBrowserRouter([
       { path: 'products/:id', element: <Suspense fallback={<SuspenseFallback />}><ProductDetailPage /></Suspense> },
       { path: 'login', element: <Suspense fallback={<SuspenseFallback />}><LoginPage /></Suspense> },
       { path: 'register', element: <Suspense fallback={<SuspenseFallback />}><RegisterPage /></Suspense> },
+      { path: 'forgot-password', element: <Suspense fallback={<SuspenseFallback />}><ForgotPasswordPage /></Suspense> },
+      { path: 'password-reset', element: <Suspense fallback={<SuspenseFallback />}><ResetPasswordPage /></Suspense> },
       { path: 'verify-email/:id/:hash', element: <Suspense fallback={<SuspenseFallback />}><VerifyEmailPage /></Suspense> },
       { path: 'auth/callback', element: <Suspense fallback={<SuspenseFallback />}><GoogleCallback /></Suspense> },
       { path: 'checkout', element: <RequireAuth><Suspense fallback={<SuspenseFallback />}><CheckoutPage /></Suspense></RequireAuth> },
+      { path: 'privacy', element: <Suspense fallback={<SuspenseFallback />}><PrivacyPolicyPage /></Suspense> },
+      { path: 'terms', element: <Suspense fallback={<SuspenseFallback />}><TermsOfServicePage /></Suspense> },
+      { path: '*', element: <Suspense fallback={<SuspenseFallback />}><NotFoundPage /></Suspense> },
       {
         path: 'customer-dashboard',
         element: (

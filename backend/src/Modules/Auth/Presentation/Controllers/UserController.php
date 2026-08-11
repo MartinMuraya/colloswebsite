@@ -11,7 +11,12 @@ class UserController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->get();
+        $users = User::with('roles')
+            ->withCount('orders')
+            ->withSum(['orders' => function($query) {
+                $query->where('status', '!=', 'failed');
+            }], 'total_amount')
+            ->get();
         return response()->json([
             'status' => 'success',
             'data' => $users

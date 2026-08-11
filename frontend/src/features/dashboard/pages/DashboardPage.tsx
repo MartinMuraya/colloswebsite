@@ -12,9 +12,20 @@ import {
   PackageSearch,
   AlertCircle
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer
+} from 'recharts';
 
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState('7d');
+  const navigate = useNavigate();
 
   // Fetch Stats dynamically every 10 seconds
   const { data: statsData, isLoading: isLoadingStats, isError: isErrorStats } = useQuery({
@@ -141,7 +152,7 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Revenue Chart Placeholder */}
+        {/* Revenue Chart */}
         <motion.div variants={itemVariants} className="lg:col-span-2 glass-panel p-6 flex flex-col">
           <div className="flex justify-between items-center mb-6">
             <h3 className="text-lg font-bold text-white">Revenue Analytics</h3>
@@ -150,12 +161,31 @@ export default function DashboardPage() {
               <option>Last Week</option>
             </select>
           </div>
-          <div className="flex-1 flex items-center justify-center border-2 border-dashed border-dark-600 rounded-xl bg-dark-800/50 min-h-[300px]">
-            <div className="text-center">
-              <Activity className="w-10 h-10 text-dark-500 mx-auto mb-3" />
-              <p className="text-slate-400 font-medium">Chart Visualization Area</p>
-              <p className="text-sm text-slate-500 mt-1">Real-time data visualization will appear here.</p>
-            </div>
+          <div className="flex-1 w-full min-h-[300px]">
+            {isLoadingStats ? (
+              <div className="w-full h-full flex items-center justify-center text-slate-500 animate-pulse">
+                Loading chart...
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={statsData?.revenueChart || []} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+                  <defs>
+                    <linearGradient id="colorRevenue" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
+                      <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                    </linearGradient>
+                  </defs>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                  <XAxis dataKey="name" stroke="#64748b" tick={{fill: '#64748b'}} axisLine={false} tickLine={false} />
+                  <YAxis stroke="#64748b" tick={{fill: '#64748b'}} axisLine={false} tickLine={false} tickFormatter={(value) => `KES ${value}`} />
+                  <Tooltip 
+                    contentStyle={{ backgroundColor: '#1e293b', border: 'none', borderRadius: '8px', color: '#fff' }}
+                    itemStyle={{ color: '#10b981' }}
+                  />
+                  <Area type="monotone" dataKey="revenue" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorRevenue)" />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </div>
         </motion.div>
 
@@ -163,7 +193,9 @@ export default function DashboardPage() {
         <motion.div variants={itemVariants} className="glass-panel flex flex-col">
           <div className="p-6 border-b border-dark-700 flex justify-between items-center">
             <h3 className="text-lg font-bold text-white">Recent Orders</h3>
-            <button className="text-sm text-brand-400 hover:text-brand-300 font-medium">View All</button>
+            <button onClick={() => navigate('/dashboard/orders')} className="text-sm text-brand-400 hover:text-brand-300 font-medium transition-colors">
+              View All
+            </button>
           </div>
           <div className="flex-1 overflow-y-auto">
             {isLoadingOrders ? (

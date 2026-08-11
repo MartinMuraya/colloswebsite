@@ -13,6 +13,7 @@ import {
   Image as ImageIcon,
   LogOut
 } from 'lucide-react';
+import api from '../../../lib/axios';
 
 export default function AdminLayout() {
   const [isSidebarOpen] = useState(true);
@@ -118,7 +119,12 @@ export default function AdminLayout() {
           </div>
           <motion.button
             animate={{ opacity: isSidebarOpen ? 1 : 0, display: isSidebarOpen ? 'flex' : 'none' }}
-            onClick={() => {
+            onClick={async () => {
+              try {
+                await api.post('/auth/logout');
+              } catch (e) {
+                console.error(e);
+              }
               localStorage.removeItem('user');
               localStorage.removeItem('auth_token');
               window.location.href = '/login';

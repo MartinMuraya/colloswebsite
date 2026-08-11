@@ -1,23 +1,19 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../../lib/axios';
 import { useDispatch, useSelector } from 'react-redux';
-import { addItem } from '../../../store/slices/cartSlice';
-import type { CartItem } from '../../../store/slices/cartSlice';
-import { Search, ShoppingCart, Loader2, Image as ImageIcon, AlertCircle, X, Plus, Minus, Trash2, ArrowRight } from 'lucide-react';
-import { updateQuantity, removeItem } from '../../../store/slices/cartSlice';
+import { addItem, openCart } from '../../../store/slices/cartSlice';
+import { Search, ShoppingCart, Loader2, Image as ImageIcon, AlertCircle, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import type { RootState } from '../../../store';
 
 export default function PublicProductsPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [isCartOpen, setIsCartOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   
   const cartItems = useSelector((state: RootState) => state.cart.items);
-  const totalAmount = useSelector((state: RootState) => state.cart.totalAmount);
   
   const { data: responseData, isLoading, isError } = useQuery({
     queryKey: ['public-products', searchTerm],
@@ -32,26 +28,15 @@ export default function PublicProductsPage() {
 
   const products = responseData?.data || [];
 
-  const handleAddToCart = (product: any) => {
+  const handleAddToCart = (product: any, e: React.MouseEvent) => {
+    e.stopPropagation();
     dispatch(addItem({
       id: product.id,
       name: product.name,
-      sku: product.sku,
+      sku: product.sku || `PRD-${product.id}`,
       price: product.price,
     }));
-    setIsCartOpen(true);
-  };
-
-  const handleCheckout = () => {
-    // Check if user is logged in
-    const userStr = localStorage.getItem('user');
-    if (!userStr) {
-      // Redirect to login with a message or just redirect
-      navigate('/login?redirect=checkout');
-    } else {
-      // Redirect to a secure checkout page (or dashboard pos)
-      navigate('/dashboard/pos');
-    }
+    dispatch(openCart());
   };
 
   const formatCurrency = (amount: number) => {
@@ -94,7 +79,7 @@ export default function PublicProductsPage() {
             </div>
             
             <button 
-              onClick={() => setIsCartOpen(true)}
+              onClick={() => dispatch(openCart())}
               className="relative p-3 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-xl text-gray-700 dark:text-gray-300 hover:text-brand-500 dark:hover:text-brand-400 transition-all shadow-sm group"
             >
               <ShoppingCart className="w-6 h-6 group-hover:scale-110 transition-transform" />
@@ -189,7 +174,7 @@ export default function PublicProductsPage() {
                       {formatCurrency(product.price)}
                     </span>
                     <button 
-                      onClick={() => handleAddToCart(product)}
+                      onClick={(e) => handleAddToCart(product, e)}
                       disabled={product.status === 'Out of Stock'}
                       className="w-10 h-10 rounded-full bg-brand-50 dark:bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center hover:bg-brand-600 hover:text-white dark:hover:bg-brand-500 dark:hover:text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       title="Add to Cart"
@@ -203,118 +188,6 @@ export default function PublicProductsPage() {
           </div>
         )}
       </div>
-
-      {/* Shopping Cart Drawer Overlay */}
-      <AnimatePresence>
-        {isCartOpen && (
-          <>
-            <motion.div 
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsCartOpen(false)}
-              className="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50"
-            />
-            
-            <motion.div 
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed top-0 right-0 h-full w-full max-w-md bg-white dark:bg-gray-900 shadow-2xl z-50 flex flex-col"
-            >
-              <div className="p-6 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-brand-50 dark:bg-brand-500/10 flex items-center justify-center">
-                    <ShoppingCart className="w-5 h-5 text-brand-600 dark:text-brand-400" />
-                  </div>
-                  <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Cart</h2>
-                </div>
-                <button 
-                  onClick={() => setIsCartOpen(false)}
-                  className="p-2 text-gray-400 hover:text-gray-900 dark:hover:text-white bg-gray-50 dark:bg-gray-800 rounded-full transition-colors"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto p-6 space-y-4">
-                {cartItems.length === 0 ? (
-                  <div className="h-full flex flex-col items-center justify-center text-center text-gray-500 dark:text-gray-400">
-                    <ShoppingCart className="w-16 h-16 mb-4 opacity-20" />
-                    <p className="text-lg font-medium">Your cart is empty</p>
-                    <p className="text-sm mt-1">Looks like you haven't added any products yet.</p>
-                    <button 
-                      onClick={() => setIsCartOpen(false)}
-                      className="mt-6 px-6 py-2 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white rounded-lg font-medium hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
-                    >
-                      Continue Shopping
-                    </button>
-                  </div>
-                ) : (
-                  cartItems.map((item: CartItem) => (
-                    <div key={item.id} className="flex gap-4 p-4 bg-gray-50 dark:bg-gray-800/50 border border-gray-100 dark:border-gray-800 rounded-2xl">
-                      <div className="flex-1">
-                        <h4 className="font-bold text-gray-900 dark:text-white text-sm line-clamp-1">{item.name}</h4>
-                        <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">{item.sku}</p>
-                        <p className="font-bold text-brand-600 dark:text-brand-400 text-sm">
-                          {formatCurrency(item.price)}
-                        </p>
-                      </div>
-                      
-                      <div className="flex flex-col items-end justify-between">
-                        <button 
-                          onClick={() => dispatch(removeItem(item.id))}
-                          className="text-gray-400 hover:text-red-500 transition-colors p-1"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                        
-                        <div className="flex items-center gap-3 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg p-1">
-                          <button 
-                            onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
-                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white"
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="text-sm font-medium text-gray-900 dark:text-white w-4 text-center">
-                            {item.quantity}
-                          </span>
-                          <button 
-                            onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity + 1 }))}
-                            className="w-6 h-6 flex items-center justify-center text-gray-500 hover:text-gray-900 dark:hover:text-white"
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-
-              {cartItems.length > 0 && (
-                <div className="p-6 border-t border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-900/50">
-                  <div className="flex justify-between items-center mb-6">
-                    <span className="text-gray-500 dark:text-gray-400 font-medium">Total</span>
-                    <span className="text-2xl font-bold text-gray-900 dark:text-white">
-                      {formatCurrency(totalAmount)}
-                    </span>
-                  </div>
-                  
-                  <button 
-                    onClick={handleCheckout}
-                    className="w-full bg-brand-600 hover:bg-brand-700 text-white font-bold py-4 rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-brand-500/25 hover:shadow-brand-500/40"
-                  >
-                    <span>Proceed to Checkout</span>
-                    <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              )}
-            </motion.div>
-          </>
-        )}
-      </AnimatePresence>
     </div>
   );
 }

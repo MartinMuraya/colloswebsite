@@ -17,10 +17,18 @@ export default function LoginPage() {
       return response.data;
     },
     onSuccess: (data) => {
-      // Save user and token
       localStorage.setItem('auth_token', data.token);
       localStorage.setItem('user', JSON.stringify(data.user));
-      navigate('/dashboard');
+      
+      const userRoles = data.user.role_names || [];
+      const isAdmin = userRoles.includes('Super Admin') || userRoles.includes('Admin');
+      
+      if (isAdmin) {
+        navigate('/dashboard');
+      } else {
+        const redirect = searchParams.get('redirect');
+        navigate(redirect ? `/${redirect}` : '/customer-dashboard');
+      }
     },
     onError: (error: any) => {
       setErrorMsg(error.response?.data?.message || 'Invalid credentials');
@@ -83,7 +91,7 @@ export default function LoginPage() {
           <div className="space-y-2">
             <div className="flex justify-between items-center ml-1">
               <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Password</label>
-              <a href="#" className="text-xs text-brand-400 hover:text-brand-300 transition-colors">Forgot password?</a>
+              <Link to="/forgot-password" className="text-xs text-brand-400 hover:text-brand-300 transition-colors">Forgot password?</Link>
             </div>
             <div className="relative">
               <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

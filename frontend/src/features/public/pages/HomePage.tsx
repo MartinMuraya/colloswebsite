@@ -119,7 +119,7 @@ export default function HomePage() {
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">Featured Products</h2>
               <p className="text-gray-500 dark:text-gray-400">Discover our top-selling electrical supplies.</p>
             </div>
-            <Link to="/catalog" className="hidden md:flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700">
+            <Link to="/products" className="hidden md:flex items-center gap-2 text-blue-600 font-medium hover:text-blue-700">
               View All <ArrowRight className="w-4 h-4" />
             </Link>
           </div>

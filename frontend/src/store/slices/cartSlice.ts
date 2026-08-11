@@ -12,11 +12,13 @@ export interface CartItem {
 interface CartState {
   items: CartItem[];
   totalAmount: number;
+  isOpen: boolean;
 }
 
 const initialState: CartState = {
   items: [],
   totalAmount: 0,
+  isOpen: false,
 };
 
 const calculateTotal = (items: CartItem[]) => {
@@ -52,9 +54,18 @@ const cartSlice = createSlice({
     clearCart: (state) => {
       state.items = [];
       state.totalAmount = 0;
+    },
+    openCart: (state) => {
+      state.isOpen = true;
+    },
+    closeCart: (state) => {
+      state.isOpen = false;
+    },
+    toggleCart: (state) => {
+      state.isOpen = !state.isOpen;
     }
   },
 });
 
-export const { addItem, removeItem, updateQuantity, clearCart } = cartSlice.actions;
+export const { addItem, removeItem, updateQuantity, clearCart, openCart, closeCart, toggleCart } = cartSlice.actions;
 export default cartSlice.reducer;
