@@ -10,7 +10,7 @@ use App\Modules\Payments\Presentation\Controllers\MpesaController;
 use App\Modules\Dashboard\Presentation\Controllers\DashboardController;
 use App\Modules\Catalog\Presentation\Controllers\ProductController;
 
-Route::prefix('v1')->group(function () {
+Route::group([], function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     })->middleware('auth:sanctum');
