@@ -191,8 +191,13 @@ export default function PublicLayout() {
                       </span>
                     )}
                   </button>
-
                   <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
+                    <Link 
+                      to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
+                      className="text-sm font-semibold text-gray-700 dark:text-gray-200 hover:text-blue-600 dark:hover:text-blue-400 transition-colors mr-2"
+                    >
+                      Dashboard
+                    </Link>
                     <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden cursor-pointer group relative">
                       {user.profile_picture ? (
                         <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
@@ -280,6 +285,15 @@ export default function PublicLayout() {
                 className="absolute top-[100%] left-0 w-full z-50 md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-xl"
               >
               <div className="px-4 py-4 space-y-2">
+                {user && (
+                  <Link
+                    to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block w-full text-center px-4 py-2.5 bg-blue-600 text-white font-semibold rounded-xl mb-4"
+                  >
+                    Go to Dashboard
+                  </Link>
+                )}
                 {navigation.map((item) => (
                   <div key={item.name} className="space-y-1">
                     <div 

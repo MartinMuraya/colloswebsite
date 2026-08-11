@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Outlet, NavLink } from 'react-router-dom';
+import { Outlet, NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
   LayoutDashboard, 
@@ -11,7 +11,9 @@ import {
   CreditCard,
   Shield,
   Image as ImageIcon,
-  LogOut
+  LogOut,
+  Globe,
+  Bell
 } from 'lucide-react';
 import api from '../../lib/axios';
 
@@ -140,19 +142,60 @@ export default function AdminLayout() {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 relative h-full">
-        {/* Mobile menu toggle inside Dashboard */}
-        <div className="lg:hidden p-4 border-b border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex items-center gap-3">
-          <button 
-            onClick={() => setMobileOpen(!isMobileOpen)}
-            className="p-2 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700/50 rounded-lg transition-colors"
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <span className="font-semibold text-gray-900 dark:text-white">Admin Menu</span>
-        </div>
+        {/* Top Navbar */}
+        <header className="h-20 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center justify-between px-4 lg:px-8 shrink-0 z-10 shadow-sm transition-colors">
+          <div className="flex items-center gap-3">
+            <button 
+              onClick={() => setMobileOpen(!isMobileOpen)}
+              className="lg:hidden p-2 text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white bg-gray-100 dark:bg-gray-700/50 rounded-lg transition-colors"
+            >
+              <Menu className="w-5 h-5" />
+            </button>
+            <span className="lg:hidden font-semibold text-gray-900 dark:text-white">Admin Dashboard</span>
+          </div>
 
-        <div className="flex-1 overflow-auto p-6">
-          <Outlet />
+          <div className="flex items-center gap-4 ml-auto">
+            <Link 
+              to="/" 
+              className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-xl transition-colors"
+            >
+              <Globe className="w-4 h-4" />
+              View Public Site
+            </Link>
+            
+            <button className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors relative">
+              <Bell className="w-5 h-5" />
+              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+            </button>
+            
+            {/* Mobile View Site Link */}
+            <Link 
+              to="/" 
+              className="md:hidden p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors"
+            >
+              <Globe className="w-5 h-5" />
+            </Link>
+          </div>
+        </header>
+
+        {/* Scrollable Content */}
+        <div className="flex-1 overflow-auto bg-slate-50 dark:bg-gray-900 flex flex-col">
+          <div className="flex-1 p-4 md:p-6 lg:p-8">
+            <Outlet />
+          </div>
+
+          {/* Footer */}
+          <footer className="py-6 px-4 md:px-8 border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-center md:text-left shrink-0">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <p className="text-sm text-gray-500 dark:text-gray-400 font-medium">
+                &copy; {new Date().getFullYear()} Collos Hardware. All rights reserved.
+              </p>
+              <div className="flex items-center gap-4 text-sm font-medium text-gray-500 dark:text-gray-400">
+                <Link to="/terms" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Terms</Link>
+                <Link to="/privacy" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors">Privacy</Link>
+              </div>
+            </div>
+          </footer>
         </div>
       </main>
     </div>
