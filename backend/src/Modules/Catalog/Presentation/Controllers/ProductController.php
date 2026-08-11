@@ -15,7 +15,7 @@ class ProductController extends Controller
     ) {}
     public function index(Request $request)
     {
-        $products = $this->productService->getAllProducts($request->search);
+        $products = $this->productService->getAllProducts($request->search, $request->category);
 
         return response()->json(['data' => ProductData::collect($products)]);
     }

@@ -15,9 +15,9 @@ class ProductService
         protected ProductRepositoryInterface $productRepository
     ) {}
 
-    public function getAllProducts(string $search = null)
+    public function getAllProducts(string $search = null, string $category = null)
     {
-        return $this->productRepository->allWithCategory($search);
+        return $this->productRepository->allWithCategory($search, $category);
     }
 
     public function getProduct(int $id)

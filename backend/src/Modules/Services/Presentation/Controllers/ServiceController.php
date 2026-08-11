@@ -19,9 +19,9 @@ class ServiceController extends Controller
         return response()->json(['data' => ServiceData::collect($services)]);
     }
 
-    public function published()
+    public function published(Request $request)
     {
-        $services = $this->serviceService->getPublished();
+        $services = $this->serviceService->getPublished($request->category);
         return response()->json(['data' => ServiceData::collect($services)]);
     }
 

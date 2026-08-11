@@ -10,21 +10,34 @@ class ServiceService
 {
     use UploadsImages;
 
-    public function getAll(string $search = null)
+    public function getAll(string $search = null, string $category = null)
     {
         $query = Service::query()->with('category');
+
+        if ($category) {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('slug', $category);
+            });
+        }
+
         if ($search) {
             $query->where('name', 'like', "%{$search}%");
         }
         return $query->latest()->get();
     }
 
-    public function getPublished()
+    public function getPublished(string $category = null)
     {
-        return Service::with('category')
-            ->where('is_published', true)
-            ->latest()
-            ->get();
+        $query = Service::with('category')
+            ->where('is_published', true);
+
+        if ($category) {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('slug', $category);
+            });
+        }
+
+        return $query->latest()->get();
     }
 
     public function getBySlug(string $slug)

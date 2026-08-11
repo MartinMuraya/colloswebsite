@@ -11,17 +11,14 @@ export default function ServicesPage() {
   const { data: servicesData, isLoading } = useQuery({
     queryKey: ['public-services', categorySlug],
     queryFn: async () => {
-      // In a real scenario, you might pass categorySlug as a filter param
-      // For now, we'll filter on the frontend for simplicity if backend doesn't support it
-      const response = await api.get('/services');
+      const response = await api.get('/services', {
+        params: { category: categorySlug || undefined }
+      });
       return response.data.data;
     }
   });
 
   const services = servicesData || [];
-  const filteredServices = categorySlug 
-    ? services.filter((s: any) => s.category.toLowerCase().replace(/ /g, '-') === categorySlug)
-    : services;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -38,7 +35,7 @@ export default function ServicesPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredServices.map((service: any) => (
+          {services.map((service: any) => (
             <motion.div
               key={service.id}
               whileHover={{ y: -5 }}
@@ -82,7 +79,7 @@ export default function ServicesPage() {
         </div>
       )}
       
-      {!isLoading && filteredServices.length === 0 && (
+      {!isLoading && services.length === 0 && (
         <div className="text-center py-20 text-gray-500">
           No services found in this category.
         </div>

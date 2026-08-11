@@ -8,13 +8,21 @@ use Illuminate\Database\Eloquent\Collection;
 
 class ProductRepository implements ProductRepositoryInterface
 {
-    public function allWithCategory(string $search = null): Collection
+    public function allWithCategory(string $search = null, string $category = null): Collection
     {
         $query = Product::query()->with('category');
 
+        if ($category) {
+            $query->whereHas('category', function ($q) use ($category) {
+                $q->where('slug', $category);
+            });
+        }
+
         if ($search) {
-            $query->where('name', 'like', "%{$search}%")
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
                   ->orWhere('sku', 'like', "%{$search}%");
+            });
         }
 
         return $query->get();
