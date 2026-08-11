@@ -90,9 +90,6 @@ Route::prefix('v1')->group(function () {
 
     // Temporary route to setup the database on Render Free Tier
     Route::get('/setup-db', function () {
-        if (app()->environment('production')) {
-            abort(403, 'Unauthorized in production.');
-        }
         try {
             \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
             \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
