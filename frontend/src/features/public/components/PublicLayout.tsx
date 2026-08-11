@@ -1,5 +1,6 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut } from 'lucide-react';
+import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut, ChevronDown } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -15,6 +16,22 @@ export default function PublicLayout() {
   const dispatch = useDispatch();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
+
+  const { data: productCategories } = useQuery({
+    queryKey: ['public-product-categories'],
+    queryFn: async () => {
+      const res = await api.get('/catalog/categories/published');
+      return res.data;
+    }
+  });
+
+  const { data: serviceCategories } = useQuery({
+    queryKey: ['public-service-categories'],
+    queryFn: async () => {
+      const res = await api.get('/services/categories/published');
+      return res.data;
+    }
+  });
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
   const cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
@@ -74,14 +91,57 @@ export default function PublicLayout() {
             {/* Desktop Navigation - Center */}
             <div className="hidden md:flex items-center justify-center flex-1 gap-8">
               {navigation.map((item) => (
-                <Link
-                  key={item.name}
-                  to={item.href}
-                  className={`text-sm font-semibold transition-all hover:text-blue-600 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'
-                    }`}
-                >
-                  {item.name}
-                </Link>
+                <div key={item.name} className="relative group">
+                  <Link
+                    to={item.href}
+                    className={`flex items-center gap-1 text-sm font-semibold transition-all hover:text-blue-600 py-6 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}
+                  >
+                    {item.name}
+                    {(item.name === 'Products' || item.name === 'Services') && (
+                      <ChevronDown className="w-4 h-4 transition-transform group-hover:rotate-180" />
+                    )}
+                  </Link>
+
+                  {(item.name === 'Products' || item.name === 'Services') && (
+                    <div className="absolute top-[100%] left-1/2 -translate-x-1/2 w-[250px] bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50">
+                      <div className="p-3">
+                        <div className="text-xs font-bold text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2 px-3 pt-2">
+                          {item.name === 'Products' ? 'Product Categories' : 'Service Categories'}
+                        </div>
+                        <div className="flex flex-col">
+                          {item.name === 'Products' && productCategories?.data?.slice(0, 6).map((cat: any) => (
+                            <Link 
+                              key={cat.id} 
+                              to={`/products?category=${cat.slug}`}
+                              className="px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-blue-600 transition-colors"
+                            >
+                              {cat.name}
+                            </Link>
+                          ))}
+                          
+                          {item.name === 'Services' && serviceCategories?.data?.slice(0, 6).map((cat: any) => (
+                            <Link 
+                              key={cat.id} 
+                              to={`/services?category=${cat.slug}`}
+                              className="px-3 py-2.5 text-sm font-medium text-gray-700 dark:text-gray-300 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700/50 hover:text-blue-600 transition-colors"
+                            >
+                              {cat.name}
+                            </Link>
+                          ))}
+
+                          <div className="h-px bg-gray-100 dark:bg-gray-700 my-1"></div>
+                          <Link
+                            to={item.href}
+                            className="px-3 py-2.5 text-sm font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-colors flex justify-between items-center"
+                          >
+                            View All {item.name}
+                            <span className="text-lg leading-none">→</span>
+                          </Link>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </div>
               ))}
             </div>
 
@@ -210,17 +270,42 @@ export default function PublicLayout() {
             >
               <div className="px-4 py-4 space-y-2">
                 {navigation.map((item) => (
-                  <Link
-                    key={item.name}
-                    to={item.href}
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className={`block px-4 py-3 rounded-xl text-base font-semibold transition-colors ${isActive(item.href)
-                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
-                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                      }`}
-                  >
-                    {item.name}
-                  </Link>
+                  <div key={item.name} className="space-y-1">
+                    <Link
+                      to={item.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className={`flex justify-between items-center px-4 py-3 rounded-xl text-base font-semibold transition-colors ${isActive(item.href)
+                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
+                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                        }`}
+                    >
+                      {item.name}
+                    </Link>
+                    {(item.name === 'Products' || item.name === 'Services') && (
+                      <div className="pl-4 space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4 mb-2">
+                        {item.name === 'Products' && productCategories?.data?.slice(0, 4).map((cat: any) => (
+                          <Link
+                            key={cat.id}
+                            to={`/products?category=${cat.slug}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))}
+                        {item.name === 'Services' && serviceCategories?.data?.slice(0, 4).map((cat: any) => (
+                          <Link
+                            key={cat.id}
+                            to={`/services?category=${cat.slug}`}
+                            onClick={() => setIsMobileMenuOpen(false)}
+                            className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                          >
+                            {cat.name}
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 ))}
 
                 <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-800 space-y-3">
