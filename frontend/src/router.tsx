@@ -11,6 +11,7 @@ const AboutUsPage = React.lazy(() => import('./features/public/pages/AboutUsPage
 const ContactUsPage = React.lazy(() => import('./features/public/pages/ContactUsPage'));
 const PublicProductsPage = React.lazy(() => import('./features/public/pages/PublicProductsPage'));
 const ProductDetailPage = React.lazy(() => import('./features/public/pages/ProductDetailPage'));
+const ServicesPage = React.lazy(() => import('./features/public/pages/ServicesPage'));
 const LoginPage = React.lazy(() => import('./features/auth/pages/LoginPage'));
 const RegisterPage = React.lazy(() => import('./features/auth/pages/RegisterPage'));
 const VerifyEmailPage = React.lazy(() => import('./features/auth/pages/VerifyEmailPage'));
@@ -25,6 +26,7 @@ const ResetPasswordPage = React.lazy(() => import('./features/auth/pages/ResetPa
 
 const DashboardPage = React.lazy(() => import('./features/dashboard/pages/DashboardPage'));
 const ProductCatalogPage = React.lazy(() => import('./features/catalog/pages/ProductCatalogPage'));
+const ServicesCatalogPage = React.lazy(() => import('./features/services/pages/ServicesCatalogPage'));
 const CustomersPage = React.lazy(() => import('./features/customers/pages/CustomersPage'));
 const PaymentsPage = React.lazy(() => import('./features/payments/pages/PaymentsPage'));
 const UsersManagementPage = React.lazy(() => import('./features/dashboard/pages/UsersManagementPage'));
@@ -48,6 +50,7 @@ export const router = createBrowserRouter([
       { path: 'contact', element: <Suspense fallback={<SuspenseFallback />}><ContactUsPage /></Suspense> },
       { path: 'products', element: <Suspense fallback={<SuspenseFallback />}><PublicProductsPage /></Suspense> },
       { path: 'products/:id', element: <Suspense fallback={<SuspenseFallback />}><ProductDetailPage /></Suspense> },
+      { path: 'services', element: <Suspense fallback={<SuspenseFallback />}><ServicesPage /></Suspense> },
       { path: 'login', element: <Suspense fallback={<SuspenseFallback />}><LoginPage /></Suspense> },
       { path: 'register', element: <Suspense fallback={<SuspenseFallback />}><RegisterPage /></Suspense> },
       { path: 'forgot-password', element: <Suspense fallback={<SuspenseFallback />}><ForgotPasswordPage /></Suspense> },
@@ -82,6 +85,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <Suspense fallback={<SuspenseFallback />}><DashboardPage /></Suspense> },
       { path: 'catalog', element: <Suspense fallback={<SuspenseFallback />}><ProductCatalogPage /></Suspense> },
+      { path: 'services', element: <Suspense fallback={<SuspenseFallback />}><ServicesCatalogPage /></Suspense> },
       { path: 'customers', element: <Suspense fallback={<SuspenseFallback />}><CustomersPage /></Suspense> },
       { path: 'users', element: <Suspense fallback={<SuspenseFallback />}><UsersManagementPage /></Suspense> },
       { path: 'payments', element: <Suspense fallback={<SuspenseFallback />}><PaymentsPage /></Suspense> },

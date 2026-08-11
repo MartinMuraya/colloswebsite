@@ -214,8 +214,8 @@ export default function PublicLayout() {
                     to={item.href}
                     onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-semibold transition-colors ${isActive(item.href)
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
+                      ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
+                      : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
                       }`}
                   >
                     {item.name}
@@ -258,7 +258,7 @@ export default function PublicLayout() {
       {/* Main Content */}
       <main className="flex-1 flex flex-col relative w-full h-full max-w-full">
         <Outlet />
-      
+
         {/* Footer */}
         <footer className="bg-white dark:bg-gray-950 border-t border-gray-100 dark:border-gray-900 transition-colors mt-auto">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -301,15 +301,15 @@ export default function PublicLayout() {
                 <ul className="space-y-3 text-sm text-gray-500 dark:text-gray-400">
                   <li className="flex items-start gap-3">
                     <MapPin className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                    <span>Industrial Area, Enterprise Road<br />Nairobi, Kenya</span>
+                    <span>Murang'a County, <br />Murang'a Town, Kenya</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <Phone className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                    <span>+254 700 000000</span>
+                    <span>+254 791 332310</span>
                   </li>
                   <li className="flex items-center gap-3">
                     <Mail className="w-5 h-5 text-blue-600 flex-shrink-0" />
-                    <span>sales@colloshardware.com</span>
+                    <span>www.gathongomartin@gmail.com</span>
                   </li>
                 </ul>
               </div>

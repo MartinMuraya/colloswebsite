@@ -4,23 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Category extends Model
+class ServiceCategory extends Model
 {
     protected $guarded = [];
 
     public function parent()
     {
-        return $this->belongsTo(Category::class, 'parent_id');
+        return $this->belongsTo(ServiceCategory::class, 'parent_id');
     }
 
     public function children()
     {
-        return $this->hasMany(Category::class, 'parent_id');
+        return $this->hasMany(ServiceCategory::class, 'parent_id');
     }
 
-    public function products()
+    public function services()
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Service::class);
     }
 
     protected function casts(): array

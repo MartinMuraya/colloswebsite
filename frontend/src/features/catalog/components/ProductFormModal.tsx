@@ -18,6 +18,8 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
   const [categoryId, setCategoryId] = useState('1'); // Default to Circuit Breakers
   const [image, setImage] = useState<File | null>(null);
 
+  const [isPublished, setIsPublished] = useState(true);
+
   useEffect(() => {
     if (product) {
       setName(product.name);
@@ -25,6 +27,7 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
       setPrice(product.price.toString());
       setStock(product.stock.toString());
       setCategoryId(product.category_id ? product.category_id.toString() : '1');
+      setIsPublished(product.is_published ?? true);
     } else {
       setName('');
       setSku('');
@@ -32,6 +35,7 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
       setStock('');
       setCategoryId('1');
       setImage(null);
+      setIsPublished(true);
     }
   }, [product, isOpen]);
 
@@ -64,6 +68,7 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
     formData.append('stock', stock);
     formData.append('category_id', categoryId);
     formData.append('status', parseInt(stock) > 0 ? 'In Stock' : 'Out of Stock');
+    formData.append('is_published', isPublished ? '1' : '0');
     
     if (image) {
       formData.append('image', image);
@@ -126,6 +131,11 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
               </div>
               <input type="file" className="hidden" accept="image/*" onChange={(e) => setImage(e.target.files?.[0] || null)} />
             </label>
+          </div>
+
+          <div className="flex items-center gap-2 pt-2">
+            <input type="checkbox" id="is_published" checked={isPublished} onChange={(e) => setIsPublished(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500" />
+            <label htmlFor="is_published" className="text-sm font-medium text-gray-700 dark:text-gray-300">Published</label>
           </div>
 
           <div className="pt-4 flex justify-end gap-2">

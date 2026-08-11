@@ -25,7 +25,8 @@ export default function AdminLayout() {
 
   const navItems = [
     { name: 'Dashboard', icon: LayoutDashboard, path: '/dashboard', show: true },
-    { name: 'Catalog', icon: Package, path: '/dashboard/catalog', show: true },
+    { name: 'Products', icon: Package, path: '/dashboard/catalog', show: true },
+    { name: 'Services', icon: Package, path: '/dashboard/services', show: true },
     { name: 'Customers', icon: Users, path: '/dashboard/customers', show: true },
     { name: 'Payments', icon: CreditCard, path: '/dashboard/payments', show: true },
     { name: 'User Roles', icon: Shield, path: '/dashboard/users', show: isSuperAdmin },

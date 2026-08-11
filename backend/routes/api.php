@@ -21,12 +21,46 @@ Route::prefix('v1')->group(function () {
     });
 
     Route::prefix('catalog')->group(function () {
+        // Public Catalog Routes
         Route::get('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'index']);
         Route::get('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'show']);
-        // Admin only routes
-        Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store'])->middleware('auth:sanctum');
-        Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update'])->middleware('auth:sanctum');
-        Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy'])->middleware('auth:sanctum');
+        Route::get('/categories/published', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'published']);
+        Route::get('/categories/{slug}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'show']);
+
+        // Admin Catalog Routes
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store']);
+            Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update']);
+            Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy']);
+
+            Route::get('/categories', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'index']);
+            Route::post('/categories', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'store']);
+            Route::post('/categories/{id}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'update']);
+            Route::delete('/categories/{id}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'destroy']);
+        });
+    });
+
+    Route::prefix('services')->group(function () {
+        // Public Services Routes
+        Route::get('/', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'published']);
+        Route::get('/{slug}', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'show']);
+        
+        // Public Service Categories
+        Route::get('/categories/published', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'published']);
+        Route::get('/categories/{slug}', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'show']);
+
+        // Admin Services Routes
+        Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/admin/all', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'index']);
+            Route::post('/', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'store']);
+            Route::post('/{id}', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'update']);
+            Route::delete('/{id}', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'destroy']);
+
+            Route::get('/categories/admin/all', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'index']);
+            Route::post('/categories', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'store']);
+            Route::post('/categories/{id}', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'update']);
+            Route::delete('/categories/{id}', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'destroy']);
+        });
     });
 
     Route::prefix('orders')->group(function () {

@@ -28,6 +28,12 @@ class Product extends Model
         return [
             'is_variant' => 'boolean',
             'attributes' => 'array',
+            'is_featured' => 'boolean',
+            'is_published' => 'boolean',
+            'show_in_navigation' => 'boolean',
+            'images' => 'array',
+            'specifications' => 'array',
+            'tags' => 'array',
         ];
     }
 }
