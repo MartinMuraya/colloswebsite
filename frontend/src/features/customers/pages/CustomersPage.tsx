@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Search, Edit, Trash2, Shield, ShieldAlert, Loader2, AlertCircle } from 'lucide-react';
+import { Search, Trash2, Shield, Loader2, AlertCircle } from 'lucide-react';
 import { useQuery } from '@tanstack/react-query';
 import api from '../../../lib/axios';
 

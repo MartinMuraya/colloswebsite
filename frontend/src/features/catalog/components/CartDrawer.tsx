@@ -1,21 +1,12 @@
-import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ShoppingCart, Plus, Minus, Trash2, Smartphone, Loader2, CheckCircle2 } from 'lucide-react';
+import { X, ShoppingCart, Plus, Minus, Trash2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { RootState } from '../../../store';
-import { closeCart } from '../../../store/slices/cartSlice';
-import axios from '../../../lib/axios';
+import { closeCart, removeItem, updateQuantity, clearCart } from '../../../store/slices/cartSlice';
 
 export default function CartDrawer() {
   const dispatch = useDispatch();
   const { items, totalAmount, isOpen } = useSelector((state: RootState) => state.cart);
-
-  // M-Pesa Checkout State
-  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [errorMessage, setErrorMessage] = useState('');
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES' }).format(amount);

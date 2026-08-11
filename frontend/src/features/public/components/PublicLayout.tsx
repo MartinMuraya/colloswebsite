@@ -1,5 +1,5 @@
 import { Outlet, Link, useLocation } from 'react-router-dom';
-import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut, Facebook, Twitter, Instagram } from 'lucide-react';
+import { Menu, X, Zap, Mail, Phone, MapPin, Sun, Moon, ShoppingCart, Bell, LogOut } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useTheme } from '../../../contexts/ThemeContext';
@@ -274,14 +274,14 @@ export default function PublicLayout() {
                   Your premier source for high-quality electrical and hardware supplies. Powering homes and industries with reliable components since 2010.
                 </p>
                 <div className="flex gap-4">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                    <Facebook className="w-4 h-4" />
+                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors font-bold text-xs">
+                    FB
                   </a>
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors">
-                    <Twitter className="w-4 h-4" />
+                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors font-bold text-xs">
+                    TW
                   </a>
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors">
-                    <Instagram className="w-4 h-4" />
+                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800 text-gray-500 hover:text-pink-600 hover:bg-pink-50 dark:hover:bg-pink-900/30 transition-colors font-bold text-xs">
+                    IG
                   </a>
                 </div>
               </div>

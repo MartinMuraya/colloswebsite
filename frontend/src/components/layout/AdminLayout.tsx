@@ -13,7 +13,7 @@ import {
   Image as ImageIcon,
   LogOut
 } from 'lucide-react';
-import api from '../../../lib/axios';
+import api from '../../lib/axios';
 
 export default function AdminLayout() {
   const [isSidebarOpen] = useState(true);

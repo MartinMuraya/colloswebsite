@@ -8,7 +8,6 @@ import {
   Users, 
   TrendingUp, 
   TrendingDown,
-  Activity,
   PackageSearch,
   AlertCircle
 } from 'lucide-react';
