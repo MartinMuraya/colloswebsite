@@ -5,10 +5,12 @@ import api from '../../../lib/axios';
 import { useDispatch, useSelector } from 'react-redux';
 import { addItem, openCart } from '../../../store/slices/cartSlice';
 import { Search, ShoppingCart, Loader2, Image as ImageIcon, AlertCircle, Plus } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import type { RootState } from '../../../store';
 
 export default function PublicProductsPage() {
+  const [searchParams] = useSearchParams();
+  const categoryParam = searchParams.get('category');
   const [searchTerm, setSearchTerm] = useState('');
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -16,10 +18,10 @@ export default function PublicProductsPage() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
   
   const { data: responseData, isLoading, isError } = useQuery({
-    queryKey: ['public-products', searchTerm],
+    queryKey: ['public-products', searchTerm, categoryParam],
     queryFn: async () => {
       const response = await api.get('/catalog/products', {
-        params: { search: searchTerm }
+        params: { search: searchTerm, category: categoryParam || undefined }
       });
       return response.data;
     },

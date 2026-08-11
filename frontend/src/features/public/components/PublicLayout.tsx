@@ -13,6 +13,7 @@ import CartDrawer from '../../catalog/components/CartDrawer';
 export default function PublicLayout() {
   const { theme, toggleTheme } = useTheme();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [expandedMobile, setExpandedMobile] = useState<string | null>(null);
   const dispatch = useDispatch();
   const location = useLocation();
   const [user, setUser] = useState<any>(null);
@@ -271,40 +272,60 @@ export default function PublicLayout() {
               <div className="px-4 py-4 space-y-2">
                 {navigation.map((item) => (
                   <div key={item.name} className="space-y-1">
-                    <Link
-                      to={item.href}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className={`flex justify-between items-center px-4 py-3 rounded-xl text-base font-semibold transition-colors ${isActive(item.href)
-                        ? 'bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400'
-                        : 'text-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-800'
-                        }`}
-                    >
-                      {item.name}
-                    </Link>
-                    {(item.name === 'Products' || item.name === 'Services') && (
-                      <div className="pl-4 space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4 mb-2">
-                        {item.name === 'Products' && productCategories?.data?.slice(0, 4).map((cat: any) => (
-                          <Link
-                            key={cat.id}
-                            to={`/products?category=${cat.slug}`}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
-                          >
-                            {cat.name}
-                          </Link>
-                        ))}
-                        {item.name === 'Services' && serviceCategories?.data?.slice(0, 4).map((cat: any) => (
-                          <Link
-                            key={cat.id}
-                            to={`/services?category=${cat.slug}`}
-                            onClick={() => setIsMobileMenuOpen(false)}
-                            className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
-                          >
-                            {cat.name}
-                          </Link>
-                        ))}
-                      </div>
-                    )}
+                    <div className={`flex justify-between items-center px-4 py-3 rounded-xl transition-colors ${isActive(item.href)
+                      ? 'bg-blue-50 dark:bg-blue-900/20'
+                      : 'hover:bg-gray-50 dark:hover:bg-gray-800'
+                      }`}>
+                      <Link
+                        to={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={`text-base font-semibold flex-1 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}
+                      >
+                        {item.name}
+                      </Link>
+                      {(item.name === 'Products' || item.name === 'Services') && (
+                        <button 
+                          onClick={() => setExpandedMobile(expandedMobile === item.name ? null : item.name)}
+                          className="p-1 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
+                        >
+                          <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobile === item.name ? 'rotate-180' : ''}`} />
+                        </button>
+                      )}
+                    </div>
+                    
+                    <AnimatePresence>
+                      {expandedMobile === item.name && (item.name === 'Products' || item.name === 'Services') && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: 'auto', opacity: 1 }}
+                          exit={{ height: 0, opacity: 0 }}
+                          className="overflow-hidden"
+                        >
+                          <div className="pl-4 space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4 mb-2">
+                            {item.name === 'Products' && productCategories?.data?.slice(0, 4).map((cat: any) => (
+                              <Link
+                                key={cat.id}
+                                to={`/products?category=${cat.slug}`}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                              >
+                                {cat.name}
+                              </Link>
+                            ))}
+                            {item.name === 'Services' && serviceCategories?.data?.slice(0, 4).map((cat: any) => (
+                              <Link
+                                key={cat.id}
+                                to={`/services?category=${cat.slug}`}
+                                onClick={() => setIsMobileMenuOpen(false)}
+                                className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                              >
+                                {cat.name}
+                              </Link>
+                            ))}
+                          </div>
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 ))}
 
@@ -376,6 +397,7 @@ export default function PublicLayout() {
                 <h3 className="font-semibold text-gray-900 dark:text-white mb-4">Quick Links</h3>
                 <ul className="space-y-3 text-sm">
                   <li><Link to="/products" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Products</Link></li>
+                  <li><Link to="/services" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Services</Link></li>
                   <li><Link to="/about" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">About Us</Link></li>
                   <li><Link to="/contact" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Contact Us</Link></li>
                   <li><Link to="/dashboard" className="text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-400">Admin Dashboard</Link></li>
