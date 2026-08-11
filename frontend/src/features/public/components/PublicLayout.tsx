@@ -263,30 +263,52 @@ export default function PublicLayout() {
         {/* Mobile Navigation */}
         <AnimatePresence>
           {isMobileMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              className="md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-xl"
-            >
+            <>
+              {/* Backdrop */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="fixed inset-0 top-[73px] bg-black/20 dark:bg-black/50 backdrop-blur-sm z-40 md:hidden"
+              />
+              
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                className="absolute top-[100%] left-0 w-full z-50 md:hidden border-t border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 overflow-hidden shadow-xl"
+              >
               <div className="px-4 py-4 space-y-2">
                 {navigation.map((item) => (
                   <div key={item.name} className="space-y-1">
-                    <div className={`flex justify-between items-center px-4 py-3 rounded-xl transition-colors ${isActive(item.href)
+                    <div 
+                      onClick={(e) => {
+                        if (item.name === 'Products' || item.name === 'Services') {
+                          e.preventDefault();
+                          setExpandedMobile(expandedMobile === item.name ? null : item.name);
+                        }
+                      }}
+                      className={`flex justify-between items-center px-4 py-3 rounded-xl transition-colors cursor-pointer ${isActive(item.href)
                       ? 'bg-blue-50 dark:bg-blue-900/20'
                       : 'hover:bg-gray-50 dark:hover:bg-gray-800'
                       }`}>
-                      <Link
-                        to={item.href}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className={`text-base font-semibold flex-1 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}
-                      >
-                        {item.name}
-                      </Link>
+                      {item.name === 'Products' || item.name === 'Services' ? (
+                        <span className={`text-base font-semibold flex-1 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}>
+                          {item.name}
+                        </span>
+                      ) : (
+                        <Link
+                          to={item.href}
+                          onClick={() => setIsMobileMenuOpen(false)}
+                          className={`text-base font-semibold flex-1 ${isActive(item.href) ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-300'}`}
+                        >
+                          {item.name}
+                        </Link>
+                      )}
                       {(item.name === 'Products' || item.name === 'Services') && (
                         <button 
-                          onClick={() => setExpandedMobile(expandedMobile === item.name ? null : item.name)}
-                          className="p-1 rounded-md text-gray-500 hover:bg-gray-200 dark:hover:bg-gray-700"
+                          className="p-1 rounded-md text-gray-500 pointer-events-none"
                         >
                           <ChevronDown className={`w-5 h-5 transition-transform ${expandedMobile === item.name ? 'rotate-180' : ''}`} />
                         </button>
@@ -302,26 +324,48 @@ export default function PublicLayout() {
                           className="overflow-hidden"
                         >
                           <div className="pl-4 space-y-1 border-l-2 border-gray-100 dark:border-gray-800 ml-4 mb-2">
-                            {item.name === 'Products' && productCategories?.data?.slice(0, 4).map((cat: any) => (
-                              <Link
-                                key={cat.id}
-                                to={`/products?category=${cat.slug}`}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
-                              >
-                                {cat.name}
-                              </Link>
-                            ))}
-                            {item.name === 'Services' && serviceCategories?.data?.slice(0, 4).map((cat: any) => (
-                              <Link
-                                key={cat.id}
-                                to={`/services?category=${cat.slug}`}
-                                onClick={() => setIsMobileMenuOpen(false)}
-                                className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
-                              >
-                                {cat.name}
-                              </Link>
-                            ))}
+                            {item.name === 'Products' && (
+                              <>
+                                <Link
+                                  to="/products"
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="block px-4 py-2 rounded-xl text-sm font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                >
+                                  View All Products &rarr;
+                                </Link>
+                                {productCategories?.data?.slice(0, 4).map((cat: any) => (
+                                  <Link
+                                    key={cat.id}
+                                    to={`/products?category=${cat.slug}`}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                                  >
+                                    {cat.name}
+                                  </Link>
+                                ))}
+                              </>
+                            )}
+                            {item.name === 'Services' && (
+                              <>
+                                <Link
+                                  to="/services"
+                                  onClick={() => setIsMobileMenuOpen(false)}
+                                  className="block px-4 py-2 rounded-xl text-sm font-bold text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors"
+                                >
+                                  View All Services &rarr;
+                                </Link>
+                                {serviceCategories?.data?.slice(0, 4).map((cat: any) => (
+                                  <Link
+                                    key={cat.id}
+                                    to={`/services?category=${cat.slug}`}
+                                    onClick={() => setIsMobileMenuOpen(false)}
+                                    className="block px-4 py-2 rounded-xl text-sm font-medium text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-blue-600 transition-colors"
+                                  >
+                                    {cat.name}
+                                  </Link>
+                                ))}
+                              </>
+                            )}
                           </div>
                         </motion.div>
                       )}
@@ -358,6 +402,7 @@ export default function PublicLayout() {
                 </div>
               </div>
             </motion.div>
+            </>
           )}
         </AnimatePresence>
       </nav>
