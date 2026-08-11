@@ -32,7 +32,13 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
   const createCategoryMutation = useMutation({
     mutationFn: async (name: string) => {
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      return api.post('/services/categories', { name, slug, is_published: true });
+      return api.post('/services/categories', { 
+        name, 
+        slug, 
+        is_published: true,
+        show_in_navigation: true,
+        sort_order: 0
+      });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['service-categories'] });

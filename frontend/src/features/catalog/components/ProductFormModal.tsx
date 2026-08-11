@@ -33,7 +33,13 @@ export default function ProductFormModal({ isOpen, onClose, product }: ProductFo
   const createCategoryMutation = useMutation({
     mutationFn: async (name: string) => {
       const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-      return api.post('/catalog/categories', { name, slug, is_published: true });
+      return api.post('/catalog/categories', { 
+        name, 
+        slug, 
+        is_published: true,
+        show_in_navigation: true,
+        sort_order: 0
+      });
     },
     onSuccess: (res) => {
       queryClient.invalidateQueries({ queryKey: ['product-categories'] });
