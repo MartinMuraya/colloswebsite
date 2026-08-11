@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -13,13 +13,24 @@ import {
   Image as ImageIcon,
   LogOut,
   Globe,
-  Bell
+  Bell,
+  Sun,
+  Moon
 } from 'lucide-react';
 import api from '../../lib/axios';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function AdminLayout() {
   const [isSidebarOpen] = useState(true);
   const [isMobileOpen, setMobileOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const { theme, toggleTheme } = useTheme();
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 1024);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const userStr = localStorage.getItem('user');
   const user = userStr ? JSON.parse(userStr) : null;
@@ -56,7 +67,7 @@ export default function AdminLayout() {
         initial={false}
         animate={{ 
           width: isSidebarOpen ? '260px' : '80px',
-          x: isMobileOpen ? 0 : (window.innerWidth < 1024 ? -260 : 0)
+          x: isMobileOpen ? 0 : (isMobile ? -260 : 0)
         }}
         className="absolute lg:relative z-50 h-full bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 shrink-0 flex flex-col shadow-2xl transition-colors"
       >
@@ -82,6 +93,7 @@ export default function AdminLayout() {
               key={item.name}
               to={item.path}
               end={item.path === '/dashboard'}
+              onClick={() => isMobile && setMobileOpen(false)}
               className={({ isActive }) => `
                 flex items-center gap-3 px-3 py-3 rounded-xl transition-all group overflow-hidden
                 ${isActive 
@@ -155,6 +167,13 @@ export default function AdminLayout() {
           </div>
 
           <div className="flex items-center gap-4 ml-auto">
+            <button
+              onClick={toggleTheme}
+              className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
+              aria-label="Toggle Dark Mode"
+            >
+              {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+            </button>
             <Link 
               to="/" 
               className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-xl transition-colors"

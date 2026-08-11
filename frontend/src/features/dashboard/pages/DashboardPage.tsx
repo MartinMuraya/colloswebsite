@@ -99,15 +99,15 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold mb-1">Overview</h1>
           <p className="text-slate-400">Welcome back! Here's what's happening with your store today.</p>
         </div>
-        <div className="flex bg-dark-800 p-1 rounded-lg border border-dark-700">
+        <div className="flex bg-gray-100 dark:bg-dark-800 p-1 rounded-lg border border-gray-200 dark:border-dark-700">
           {['24h', '7d', '30d', '1y'].map((range) => (
             <button
               key={range}
               onClick={() => setTimeRange(range)}
               className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all ${
                 timeRange === range 
-                  ? 'bg-brand-500 text-white shadow-lg' 
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-white dark:bg-dark-700 text-brand-600 dark:text-brand-400 shadow-sm'
+                  : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
               }`}
             >
               {range}
@@ -128,7 +128,7 @@ export default function DashboardPage() {
         {stats.map((stat, index) => (
           <motion.div key={index} variants={itemVariants} className="glass-panel p-6 group hover:border-brand-500/30 transition-colors duration-300">
             <div className="flex justify-between items-start mb-4">
-              <div className="w-12 h-12 rounded-xl bg-dark-700 flex items-center justify-center text-brand-400 border border-dark-600 shadow-inner group-hover:bg-brand-500/10 group-hover:text-brand-400 transition-colors">
+              <div className="w-12 h-12 rounded-xl bg-gray-50 dark:bg-dark-700 flex items-center justify-center text-brand-500 dark:text-brand-400 border border-gray-200 dark:border-dark-600 shadow-inner group-hover:bg-brand-50 dark:group-hover:bg-brand-500/10 group-hover:text-brand-600 dark:group-hover:text-brand-400 transition-colors">
                 <stat.icon className="w-6 h-6" />
               </div>
               <div className={`flex items-center gap-1 px-2.5 py-1 rounded-md text-xs font-medium ${
@@ -141,9 +141,9 @@ export default function DashboardPage() {
               </div>
             </div>
             {isLoadingStats ? (
-              <div className="h-8 w-24 bg-dark-700 animate-pulse rounded mb-2"></div>
+              <div className="h-8 w-24 bg-gray-200 dark:bg-dark-700 animate-pulse rounded mb-2"></div>
             ) : (
-              <h3 className="text-3xl font-display font-bold text-white mb-1">{stat.value}</h3>
+              <h3 className="text-3xl font-display font-bold text-gray-900 dark:text-white mb-1">{stat.value}</h3>
             )}
             <p className="text-slate-400 text-sm font-medium">{stat.title}</p>
           </motion.div>
@@ -154,8 +154,8 @@ export default function DashboardPage() {
         {/* Revenue Chart */}
         <motion.div variants={itemVariants} className="lg:col-span-2 glass-panel p-6 flex flex-col">
           <div className="flex justify-between items-center mb-6">
-            <h3 className="text-lg font-bold text-white">Revenue Analytics</h3>
-            <select className="bg-dark-900 border border-dark-600 text-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-brand-500">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Revenue Analytics</h3>
+            <select className="bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-dark-600 text-gray-700 dark:text-slate-300 rounded-lg px-3 py-1.5 text-sm focus:outline-none focus:border-brand-500">
               <option>This Week</option>
               <option>Last Week</option>
             </select>
@@ -190,8 +190,8 @@ export default function DashboardPage() {
 
         {/* Recent Orders */}
         <motion.div variants={itemVariants} className="glass-panel flex flex-col">
-          <div className="p-6 border-b border-dark-700 flex justify-between items-center">
-            <h3 className="text-lg font-bold text-white">Recent Orders</h3>
+          <div className="p-6 border-b border-gray-200 dark:border-dark-700 flex justify-between items-center">
+            <h3 className="text-lg font-bold text-gray-900 dark:text-white">Recent Orders</h3>
             <button onClick={() => navigate('/dashboard/orders')} className="text-sm text-brand-400 hover:text-brand-300 font-medium transition-colors">
               View All
             </button>
@@ -204,11 +204,11 @@ export default function DashboardPage() {
                 {recentOrders.map((order: any) => (
                   <div key={order.id} className="p-4 hover:bg-dark-700/30 transition-colors flex items-center justify-between">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-lg bg-dark-900 border border-dark-600 flex items-center justify-center">
+                      <div className="w-10 h-10 rounded-lg bg-gray-50 dark:bg-dark-900 border border-gray-200 dark:border-dark-600 flex items-center justify-center">
                         <PackageSearch className="w-5 h-5 text-slate-400" />
                       </div>
                       <div>
-                        <p className="text-sm font-bold text-white">{order.id}</p>
+                        <p className="font-medium text-gray-900 dark:text-white">{order.order_number}</p>
                         <p className="text-xs text-slate-400">{order.customer}</p>
                       </div>
                     </div>

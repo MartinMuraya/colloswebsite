@@ -30,13 +30,13 @@ export default function CartDrawer() {
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-            className="fixed inset-y-0 right-0 w-full max-w-md bg-dark-800 border-l border-dark-700 shadow-2xl z-50 flex flex-col"
+            className="fixed inset-y-0 right-0 w-full max-w-md bg-white dark:bg-dark-800 border-l border-gray-200 dark:border-dark-700 shadow-2xl z-50 flex flex-col"
           >
               <div className="flex flex-col h-full">
-                <div className="p-6 border-b border-dark-700 flex items-center justify-between">
+                <div className="p-6 border-b border-gray-200 dark:border-dark-700 flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <ShoppingCart className="w-6 h-6 text-emerald-400" />
-                    <h2 className="text-xl font-bold text-white">Your Cart</h2>
+                    <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Cart</h2>
                   </div>
                   <button 
                     onClick={handleClose}
@@ -54,11 +54,11 @@ export default function CartDrawer() {
                     </div>
                   ) : (
                     items.map((item) => (
-                      <div key={item.id} className="bg-dark-900/50 border border-dark-600 rounded-xl p-4 flex gap-4 relative group">
+                      <div key={item.id} className="bg-gray-50 dark:bg-dark-900/50 border border-gray-200 dark:border-dark-600 rounded-xl p-4 flex gap-4 relative group">
                         <div className="flex-1">
-                          <h4 className="font-medium text-white mb-1">{item.name}</h4>
+                          <h4 className="font-medium text-gray-900 dark:text-white mb-1">{item.name}</h4>
                           <p className="text-xs text-slate-500 font-mono mb-2">{item.sku}</p>
-                          <div className="text-emerald-400 font-bold">{formatCurrency(item.price)}</div>
+                          <p className="font-bold text-brand-600 dark:text-emerald-400">{formatCurrency(item.price)}</p>
                         </div>
                         <div className="flex flex-col items-end justify-between">
                           <button 
@@ -67,7 +67,7 @@ export default function CartDrawer() {
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
-                          <div className="flex items-center gap-3 bg-dark-800 rounded-lg border border-dark-600 px-2 py-1">
+                          <div className="flex items-center gap-3 bg-white dark:bg-dark-800 rounded-lg border border-gray-200 dark:border-dark-600 px-2 py-1">
                             <button 
                               onClick={() => dispatch(updateQuantity({ id: item.id, quantity: item.quantity - 1 }))}
                               className="text-slate-400 hover:text-white disabled:opacity-50"
@@ -90,10 +90,10 @@ export default function CartDrawer() {
                 </div>
 
                 {items.length > 0 && (
-                  <div className="p-6 border-t border-dark-700 bg-dark-900/30">
+                  <div className="p-6 border-t border-gray-200 dark:border-dark-700 bg-gray-50 dark:bg-dark-900/30">
                     <div className="flex items-center justify-between mb-4">
                       <span className="text-slate-400">Subtotal</span>
-                      <span className="text-xl font-bold text-emerald-400">{formatCurrency(totalAmount)}</span>
+                      <span className="text-xl font-bold text-brand-600 dark:text-emerald-400">{formatCurrency(totalAmount)}</span>
                     </div>
                     <div className="grid grid-cols-2 gap-3">
                       <button 
