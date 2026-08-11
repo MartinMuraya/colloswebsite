@@ -103,7 +103,7 @@ Route::prefix('v1')->group(function () {
                 'trace' => $e->getTraceAsString()
             ], 500);
         }
-    })->middleware('auth:sanctum');
+    });
 
     Route::prefix('auth')->group(function () {
         Route::post('/register', RegisterController::class)->middleware('throttle:10,1');
