@@ -18,6 +18,9 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
   const [isPublished, setIsPublished] = useState(true);
   const [image, setImage] = useState<File | null>(null);
 
+  const [isCreatingCategory, setIsCreatingCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState('');
+
   const { data: categoriesData } = useQuery({
     queryKey: ['service-categories'],
     queryFn: async () => {
@@ -25,6 +28,28 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
       return response.data.data;
     }
   });
+
+  const createCategoryMutation = useMutation({
+    mutationFn: async (name: string) => {
+      const slug = name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+      return api.post('/services/categories', { name, slug, is_published: true });
+    },
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['service-categories'] });
+      setCategoryId(res.data.category.id.toString());
+      setIsCreatingCategory(false);
+      setNewCategoryName('');
+    },
+    onError: (error: any) => {
+      alert(error.response?.data?.message || 'Failed to create category');
+    }
+  });
+
+  const handleCreateCategory = (e: React.MouseEvent) => {
+    e.preventDefault();
+    if (!newCategoryName.trim()) return;
+    createCategoryMutation.mutate(newCategoryName);
+  };
 
   useEffect(() => {
     if (service) {
@@ -110,12 +135,29 @@ export default function ServiceFormModal({ isOpen, onClose, service }: ServiceFo
           
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Category</label>
-            <select required value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="w-full px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-              <option value="">Select Category</option>
-              {categoriesData?.map((cat: any) => (
-                <option key={cat.id} value={cat.id}>{cat.name}</option>
-              ))}
-            </select>
+            {!isCreatingCategory ? (
+              <div className="flex gap-2">
+                <select required value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="flex-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
+                  <option value="">Select Category</option>
+                  {categoriesData?.map((cat: any) => (
+                    <option key={cat.id} value={cat.id}>{cat.name}</option>
+                  ))}
+                </select>
+                <button type="button" onClick={() => setIsCreatingCategory(true)} className="px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 rounded-lg whitespace-nowrap">
+                  + New
+                </button>
+              </div>
+            ) : (
+              <div className="flex gap-2">
+                <input type="text" placeholder="Category Name" value={newCategoryName} onChange={(e) => setNewCategoryName(e.target.value)} className="flex-1 px-3 py-2 border rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white" />
+                <button type="button" onClick={handleCreateCategory} disabled={createCategoryMutation.isPending} className="px-3 py-2 text-sm text-white bg-blue-600 hover:bg-blue-700 rounded-lg whitespace-nowrap">
+                  {createCategoryMutation.isPending ? '...' : 'Save'}
+                </button>
+                <button type="button" onClick={() => setIsCreatingCategory(false)} className="px-3 py-2 text-sm text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
           </div>
 
           <div>
