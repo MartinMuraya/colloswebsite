@@ -12,9 +12,18 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn(['customer_name', 'customer_phone']);
-            $table->foreignId('user_id')->after('reference')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('company_id')->nullable()->after('user_id')->constrained('companies')->nullOnDelete();
+            if (Schema::hasColumn('orders', 'customer_name')) {
+                $table->dropColumn('customer_name');
+            }
+            if (Schema::hasColumn('orders', 'customer_phone')) {
+                $table->dropColumn('customer_phone');
+            }
+            if (!Schema::hasColumn('orders', 'user_id')) {
+                $table->foreignId('user_id')->after('reference')->constrained('users')->cascadeOnDelete();
+            }
+            if (!Schema::hasColumn('orders', 'company_id')) {
+                $table->foreignId('company_id')->nullable()->after('user_id')->constrained('companies')->nullOnDelete();
+            }
         });
     }
 
