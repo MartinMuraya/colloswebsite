@@ -30,6 +30,7 @@ export default function PublicLayout() {
     }
   }, [notifications]);
   const [user, setUser] = useState<any>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const { data: productCategories } = useQuery({
     queryKey: ['public-product-categories'],
@@ -231,8 +232,16 @@ export default function PublicLayout() {
                     )}
                   </button>
                   <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
-                    <div className="group relative cursor-pointer">
-                      <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden">
+                    <div 
+                      className="relative"
+                      onMouseLeave={() => setIsProfileOpen(false)}
+                    >
+                      <button
+                        onClick={() => setIsProfileOpen(!isProfileOpen)}
+                        onMouseEnter={() => setIsProfileOpen(true)}
+                        className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:border-blue-500"
+                        title={user.name}
+                      >
                         {user.profile_picture ? (
                           <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
                         ) : (
@@ -240,43 +249,65 @@ export default function PublicLayout() {
                             {user.name?.substring(0, 2).toUpperCase() || 'U'}
                           </span>
                         )}
-                      </div>
+                      </button>
                       
                       {/* Enhanced Profile Dropdown */}
-                      <div className="absolute top-9 right-0 hidden group-hover:block pt-2">
-                        <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl w-56 z-50 overflow-hidden">
-                          <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
-                            <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.name}</p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
-                          </div>
-                          <div className="p-2 space-y-1">
-                            <Link 
-                              to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
-                            >
-                              <LayoutDashboard className="w-4 h-4" /> Dashboard
-                            </Link>
-                            <Link 
-                              to="/customer-dashboard?tab=orders"
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
-                            >
-                              <ShoppingBag className="w-4 h-4" /> My Orders
-                            </Link>
-                            <Link 
-                              to="/customer-dashboard?tab=settings"
-                              className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
-                            >
-                              <SettingsIcon className="w-4 h-4" /> Settings
-                            </Link>
-                          </div>
-                          <div className="p-2 border-t border-gray-100 dark:border-gray-700">
-                            <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3">
-                              <LogOut className="w-4 h-4" /> Logout
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                      <AnimatePresence>
+                        {isProfileOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                            className="absolute top-11 right-0 pt-2 z-50"
+                          >
+                            <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-2xl rounded-xl w-56 overflow-hidden">
+                              <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                                <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.name}</p>
+                                <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user.email}</p>
+                              </div>
+                              <div className="p-2 space-y-1">
+                                <Link 
+                                  to={user?.role_names?.some((r: string) => ['Super Admin', 'Admin', 'Staff'].includes(r)) ? '/dashboard' : '/customer-dashboard'}
+                                  onClick={() => setIsProfileOpen(false)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                                >
+                                  <LayoutDashboard className="w-4 h-4" /> Dashboard
+                                </Link>
+                                <Link 
+                                  to="/customer-dashboard?tab=orders"
+                                  onClick={() => setIsProfileOpen(false)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                                >
+                                  <ShoppingBag className="w-4 h-4" /> My Orders
+                                </Link>
+                                <Link 
+                                  to="/customer-dashboard?tab=settings"
+                                  onClick={() => setIsProfileOpen(false)}
+                                  className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                                >
+                                  <SettingsIcon className="w-4 h-4" /> Settings
+                                </Link>
+                              </div>
+                              <div className="p-2 border-t border-gray-100 dark:border-gray-700">
+                                <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3">
+                                  <LogOut className="w-4 h-4" /> Logout
+                                </button>
+                              </div>
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
                     </div>
+
+                    {/* Direct Desktop Logout Button */}
+                    <button
+                      onClick={handleLogout}
+                      className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 dark:text-red-400 rounded-xl transition-all border border-red-200 dark:border-red-900/30 shadow-sm"
+                      title="Log Out"
+                    >
+                      <LogOut className="w-3.5 h-3.5" />
+                      <span>Log Out</span>
+                    </button>
                   </div>
                 </>
               ) : (

@@ -24,7 +24,23 @@ export default function AdminLayout() {
   const [isSidebarOpen] = useState(true);
   const [isMobileOpen, setMobileOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const [notifications, setNotifications] = useState<{id: number, text: string}[]>([
+    { id: 1, text: 'Welcome to Collos Admin Panel 🚀' }
+  ]);
   const { theme, toggleTheme } = useTheme();
+
+  const handleLogout = async () => {
+    try {
+      await api.post('/auth/logout');
+    } catch (e) {
+      console.error('Logout error', e);
+    }
+    localStorage.removeItem('user');
+    localStorage.removeItem('auth_token');
+    window.location.href = '/login';
+  };
 
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 1024);
@@ -166,7 +182,7 @@ export default function AdminLayout() {
             <span className="lg:hidden font-semibold text-gray-900 dark:text-white">Admin Dashboard</span>
           </div>
 
-          <div className="flex items-center gap-4 ml-auto">
+          <div className="flex items-center gap-3 ml-auto relative">
             <button
               onClick={toggleTheme}
               className="p-2 rounded-full text-gray-500 hover:bg-gray-100 dark:text-gray-400 dark:hover:bg-gray-700 transition-colors"
@@ -174,6 +190,7 @@ export default function AdminLayout() {
             >
               {theme === 'dark' ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
             </button>
+
             <Link 
               to="/" 
               className="hidden md:flex items-center gap-2 px-4 py-2 text-sm font-medium text-blue-600 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:text-blue-400 dark:hover:bg-blue-900/40 rounded-xl transition-colors"
@@ -182,11 +199,123 @@ export default function AdminLayout() {
               View Public Site
             </Link>
             
-            <button className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors relative">
-              <Bell className="w-5 h-5" />
-              <span className="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
-            </button>
-            
+            {/* Interactive Notification Button & Popover */}
+            <div className="relative">
+              <button 
+                onClick={() => setShowNotifications(!showNotifications)}
+                className="p-2 text-gray-500 hover:text-blue-600 dark:text-gray-400 dark:hover:text-blue-400 transition-colors relative"
+                aria-label="Notifications"
+              >
+                <Bell className="w-5 h-5" />
+                {notifications.length > 0 && (
+                  <span className="absolute top-1 right-1 w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_8px_rgba(59,130,246,0.8)]"></span>
+                )}
+              </button>
+
+              <AnimatePresence>
+                {showNotifications && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                    className="absolute top-12 right-0 w-72 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl shadow-2xl overflow-hidden z-50"
+                  >
+                    <div className="p-4 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50 flex justify-between items-center">
+                      <h3 className="text-gray-900 dark:text-white font-medium text-sm">Notifications</h3>
+                      {notifications.length > 0 && (
+                        <button onClick={() => setNotifications([])} className="text-xs text-blue-600 dark:text-blue-400 hover:underline">Clear all</button>
+                      )}
+                    </div>
+                    <div className="p-2 max-h-[300px] overflow-y-auto">
+                      {notifications.length > 0 ? (
+                        notifications.map(notif => (
+                          <div key={notif.id} className="p-3 mb-2 rounded-lg bg-blue-50/50 dark:bg-blue-900/10 border border-blue-100/50 dark:border-blue-900/30 flex justify-between items-start gap-3 relative group">
+                            <p className="text-sm text-gray-700 dark:text-gray-300">{notif.text}</p>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="py-8 text-center text-gray-500 dark:text-gray-400 text-sm flex flex-col items-center">
+                          <Bell className="w-8 h-8 text-gray-300 dark:text-gray-600 mb-2" />
+                          No new notifications
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            {/* Profile Avatar & Click Dropdown */}
+            {user && (
+              <div className="relative" onMouseLeave={() => setIsProfileOpen(false)}>
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  onMouseEnter={() => setIsProfileOpen(true)}
+                  className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:border-blue-500"
+                  title={user?.name}
+                >
+                  {user?.profile_picture ? (
+                    <img src={user.profile_picture} alt={user?.name} className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                      {user?.name?.substring(0, 2).toUpperCase() || 'A'}
+                    </span>
+                  )}
+                </button>
+
+                <AnimatePresence>
+                  {isProfileOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                      className="absolute top-11 right-0 pt-2 z-50"
+                    >
+                      <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-2xl rounded-xl w-56 overflow-hidden">
+                        <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
+                          <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user?.name}</p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{user?.email}</p>
+                        </div>
+                        <div className="p-2 space-y-1">
+                          <Link 
+                            to="/"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                          >
+                            <Globe className="w-4 h-4" /> View Storefront
+                          </Link>
+                          <Link 
+                            to="/dashboard/settings"
+                            onClick={() => setIsProfileOpen(false)}
+                            className="flex items-center gap-3 px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-gray-700 dark:hover:text-blue-400 rounded-lg transition-colors"
+                          >
+                            <Settings className="w-4 h-4" /> Admin Settings
+                          </Link>
+                        </div>
+                        <div className="p-2 border-t border-gray-100 dark:border-gray-700">
+                          <button onClick={handleLogout} className="w-full text-left px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg transition-colors flex items-center gap-3">
+                            <LogOut className="w-4 h-4" /> Logout
+                          </button>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            )}
+
+            {/* Direct Desktop Logout Button */}
+            {user && (
+              <button
+                onClick={handleLogout}
+                className="hidden lg:flex items-center gap-1.5 px-3.5 py-2 text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 dark:text-red-400 rounded-xl transition-all border border-red-200 dark:border-red-900/30 shadow-sm"
+                title="Log Out"
+              >
+                <LogOut className="w-3.5 h-3.5" />
+                <span>Logout</span>
+              </button>
+            )}
+
             {/* Mobile View Site Link */}
             <Link 
               to="/" 

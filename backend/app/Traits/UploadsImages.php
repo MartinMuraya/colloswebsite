@@ -12,12 +12,21 @@ trait UploadsImages
      */
     protected function uploadImage(UploadedFile $image, string $folder = 'uploads'): string
     {
-        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
-        $uploadResult = $cloudinary->uploadApi()->upload($image->getRealPath(), [
-            'folder' => $folder
-        ]);
-        
-        return $uploadResult['secure_url'];
+        if (env('CLOUDINARY_URL')) {
+            try {
+                $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
+                $uploadResult = $cloudinary->uploadApi()->upload($image->getRealPath(), [
+                    'folder' => $folder
+                ]);
+                
+                return $uploadResult['secure_url'];
+            } catch (\Throwable $e) {
+                // Fall back to local disk storage if Cloudinary upload fails
+            }
+        }
+
+        $path = $image->store($folder, 'public');
+        return \Illuminate\Support\Facades\Storage::url($path);
     }
 
     /**

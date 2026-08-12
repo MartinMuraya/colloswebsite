@@ -36,7 +36,7 @@ class ServiceController extends Controller
         $validated = $request->validate([
             'service_category_id' => 'required|exists:service_categories,id',
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:services,slug',
+            'slug' => 'nullable|string|unique:services,slug',
             'short_description' => 'nullable|string',
             'full_description' => 'nullable|string',
             'icon' => 'nullable|string',
@@ -55,6 +55,10 @@ class ServiceController extends Controller
             'featured_image' => 'nullable|image|max:2048',
             'gallery_images.*' => 'nullable|image|max:2048'
         ]);
+
+        if (empty($validated['slug'])) {
+            $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
+        }
 
         $service = $this->serviceService->create(
             $validated, 

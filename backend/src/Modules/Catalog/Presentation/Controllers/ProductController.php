@@ -35,8 +35,19 @@ class ProductController extends Controller
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
             'status' => 'required|string',
+            'slug' => 'nullable|string|max:255',
+            'is_published' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
             'image' => 'nullable|image|max:2048'
         ]);
+
+        $validated['slug'] = $request->input('slug') ?: \Illuminate\Support\Str::slug($validated['name']);
+        if ($request->has('is_published')) {
+            $validated['is_published'] = $request->boolean('is_published');
+        }
+        if ($request->has('is_featured')) {
+            $validated['is_featured'] = $request->boolean('is_featured');
+        }
 
         $product = $this->productService->createProduct($validated, $request->file('image'));
         return response()->json(['message' => 'Product created', 'product' => ProductData::from($product)], 201);
@@ -53,8 +64,21 @@ class ProductController extends Controller
             'price' => 'sometimes|numeric|min:0',
             'stock' => 'sometimes|integer|min:0',
             'status' => 'sometimes|string',
+            'slug' => 'nullable|string|max:255',
+            'is_published' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
             'image' => 'nullable|image|max:2048'
         ]);
+
+        if (isset($validated['name']) && empty($validated['slug'])) {
+            $validated['slug'] = \Illuminate\Support\Str::slug($validated['name']);
+        }
+        if ($request->has('is_published')) {
+            $validated['is_published'] = $request->boolean('is_published');
+        }
+        if ($request->has('is_featured')) {
+            $validated['is_featured'] = $request->boolean('is_featured');
+        }
 
         $product = $this->productService->updateProduct($id, $validated, $request->file('image'));
         return response()->json(['message' => 'Product updated', 'product' => ProductData::from($product)]);
