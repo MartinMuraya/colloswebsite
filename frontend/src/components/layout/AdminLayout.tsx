@@ -59,7 +59,7 @@ export default function AdminLayout() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const [user, setUser] = useState<any>(() => {
+  const [user] = useState<any>(() => {
     try {
       const userStr = localStorage.getItem('user');
       return userStr ? JSON.parse(userStr) : null;

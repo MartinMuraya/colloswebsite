@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { X, Upload, Link as LinkIcon, Image as ImageIcon, CheckCircle, Package, Tag, DollarSign, Layers, Eye, Star, Loader2 } from 'lucide-react';
+import { X, Upload, Link as LinkIcon, Image as ImageIcon, CheckCircle, Package, Tag, DollarSign, Eye, Star, Loader2 } from 'lucide-react';
 import { useMutation, useQueryClient, useQuery } from '@tanstack/react-query';
 import api from '../../../lib/axios';
 

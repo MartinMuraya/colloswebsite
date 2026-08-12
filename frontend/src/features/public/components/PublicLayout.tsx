@@ -32,6 +32,25 @@ export default function PublicLayout() {
   });
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
+  const { data: productCategories } = useQuery({
+    queryKey: ['public-product-categories'],
+    queryFn: async () => {
+      const res = await api.get('/catalog/categories/published');
+      return res.data;
+    }
+  });
+
+  const { data: serviceCategories } = useQuery({
+    queryKey: ['public-service-categories'],
+    queryFn: async () => {
+      const res = await api.get('/services/categories/published');
+      return res.data;
+    }
+  });
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+  const cartItemCount = cartItems.reduce((total: number, item: any) => total + item.quantity, 0);
+
   useEffect(() => {
     if (notifications.length > 0) {
       const timer = setTimeout(() => {
