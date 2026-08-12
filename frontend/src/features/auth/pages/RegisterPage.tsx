@@ -155,7 +155,7 @@ export default function RegisterPage() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'http://localhost:8000/api'}/auth/google/redirect`}
+            onClick={() => window.location.href = `${import.meta.env.VITE_API_URL || 'https://colloswebsite.onrender.com/api'}/auth/google/redirect`}
             className="mt-6 w-full flex items-center justify-center gap-3 px-6 py-3 border border-gray-200 dark:border-dark-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-dark-700 transition-colors bg-white dark:bg-dark-900/50"
           >
             <svg className="w-5 h-5" viewBox="0 0 24 24">
