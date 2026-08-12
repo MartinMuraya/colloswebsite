@@ -19,9 +19,19 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => [env('FRONTEND_URL', 'http://localhost:5173'), 'https://colloswebsite-k3lb.vercel.app'],
+    'allowed_origins' => array_values(array_filter([
+        env('FRONTEND_URL'),
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://localhost:8000',
+        'https://colloswebsite.vercel.app',
+        'https://colloswebsite-k3lb.vercel.app',
+    ])),
 
-    'allowed_origins_patterns' => [],
+    'allowed_origins_patterns' => [
+        '#^https://.*\.vercel\.app$#',
+        '#^http://localhost:\d+$#',
+    ],
 
     'allowed_headers' => ['*'],
 
