@@ -24,16 +24,17 @@ Route::group([], function () {
         // Public Catalog Routes
         Route::get('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'index']);
         Route::get('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'show']);
+        Route::get('/categories', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'published']);
         Route::get('/categories/published', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'published']);
         Route::get('/categories/{slug}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'show']);
 
         // Admin Catalog Routes
         Route::middleware('auth:sanctum')->group(function () {
+            Route::get('/categories/admin/all', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'index']);
             Route::post('/products', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'store']);
             Route::post('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'update']);
             Route::delete('/products/{id}', [\App\Modules\Catalog\Presentation\Controllers\ProductController::class, 'destroy']);
 
-            Route::get('/categories', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'index']);
             Route::post('/categories', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'store']);
             Route::post('/categories/{id}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'update']);
             Route::delete('/categories/{id}', [\App\Modules\Catalog\Presentation\Controllers\CategoryController::class, 'destroy']);
@@ -41,13 +42,14 @@ Route::group([], function () {
     });
 
     Route::prefix('services')->group(function () {
+        // Public Service Categories
+        Route::get('/categories', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'published']);
+        Route::get('/categories/published', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'published']);
+        Route::get('/categories/{slug}', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'show']);
+
         // Public Services Routes
         Route::get('/', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'published']);
         Route::get('/{slug}', [\App\Modules\Services\Presentation\Controllers\ServiceController::class, 'show']);
-        
-        // Public Service Categories
-        Route::get('/categories/published', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'published']);
-        Route::get('/categories/{slug}', [\App\Modules\Services\Presentation\Controllers\ServiceCategoryController::class, 'show']);
 
         // Admin Services Routes
         Route::middleware('auth:sanctum')->group(function () {

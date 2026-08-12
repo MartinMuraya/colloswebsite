@@ -21,6 +21,15 @@ class CategoryData extends Data
         public ?string $seo_description
     ) {}
 
+    public static function from(mixed ...$payloads): static
+    {
+        if (isset($payloads[0]) && $payloads[0] instanceof Category) {
+            return self::fromModel($payloads[0]);
+        }
+
+        return parent::from(...$payloads);
+    }
+
     public static function fromModel(Category $category): self
     {
         return new self(

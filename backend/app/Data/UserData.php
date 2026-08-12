@@ -15,6 +15,15 @@ class UserData extends Data
         public array $roles
     ) {}
 
+    public static function from(mixed ...$payloads): static
+    {
+        if (isset($payloads[0]) && $payloads[0] instanceof User) {
+            return self::fromModel($payloads[0]);
+        }
+
+        return parent::from(...$payloads);
+    }
+
     public static function fromModel(User $user): self
     {
         return new self(

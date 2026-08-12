@@ -32,6 +32,15 @@ class ServiceData extends Data
         public ?string $category
     ) {}
 
+    public static function from(mixed ...$payloads): static
+    {
+        if (isset($payloads[0]) && $payloads[0] instanceof Service) {
+            return self::fromModel($payloads[0]);
+        }
+
+        return parent::from(...$payloads);
+    }
+
     public static function fromModel(Service $service): self
     {
         return new self(

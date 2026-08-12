@@ -72,7 +72,7 @@ export default function ContactUsPage() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">Phone Number</p>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">+254 700 000000</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">+254 791 332310</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
@@ -81,7 +81,7 @@ export default function ContactUsPage() {
                   </div>
                   <div>
                     <p className="font-medium text-gray-900 dark:text-white">Email Address</p>
-                    <p className="text-gray-500 dark:text-gray-400 mt-1">sales@colloshardware.com</p>
+                    <p className="text-gray-500 dark:text-gray-400 mt-1">www.gathongomartin@gmail.com</p>
                   </div>
                 </li>
                 <li className="flex items-start gap-4">
@@ -132,7 +132,7 @@ export default function ContactUsPage() {
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                      placeholder="john@example.com"
+                      placeholder="gathongomartin@gmail.com.com"
                     />
                   </div>
                 </div>
@@ -144,7 +144,7 @@ export default function ContactUsPage() {
                     value={formData.phone}
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="w-full px-4 py-3 rounded-lg border border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                    placeholder="+254 700 000000"
+                    placeholder="+254 791 332310"
                   />
                 </div>
                 <div>

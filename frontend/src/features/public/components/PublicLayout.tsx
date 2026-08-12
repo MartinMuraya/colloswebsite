@@ -231,17 +231,19 @@ export default function PublicLayout() {
                     )}
                   </button>
                   <div className="flex items-center gap-3 pl-4 border-l border-gray-200 dark:border-gray-700">
-                    <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden cursor-pointer group relative">
-                      {user.profile_picture ? (
-                        <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
-                          {user.name?.substring(0, 2).toUpperCase() || 'U'}
-                        </span>
-                      )}
+                    <div className="group relative cursor-pointer">
+                      <div className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden">
+                        {user.profile_picture ? (
+                          <img src={user.profile_picture} alt={user.name} className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-blue-600 dark:text-blue-400 font-bold text-sm">
+                            {user.name?.substring(0, 2).toUpperCase() || 'U'}
+                          </span>
+                        )}
+                      </div>
                       
                       {/* Enhanced Profile Dropdown */}
-                      <div className="absolute top-10 right-0 hidden group-hover:block pt-2">
+                      <div className="absolute top-9 right-0 hidden group-hover:block pt-2">
                         <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-xl rounded-xl w-56 z-50 overflow-hidden">
                           <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">
                             <p className="text-sm font-bold text-gray-900 dark:text-white truncate">{user.name}</p>
