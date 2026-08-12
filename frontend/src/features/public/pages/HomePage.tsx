@@ -22,7 +22,7 @@ export default function HomePage() {
   });
 
   const products = responseData?.data?.slice(0, 4) || [];
-  const heroBg = settingsData?.home_hero_bg || "https://res.cloudinary.com/demo/image/upload/v1683120194/cld-sample-2.jpg";
+  const heroBg = settingsData?.home_hero_bg || "https://images.unsplash.com/photo-1581092160562-40aa08e78837?q=80&w=1200&auto=format&fit=crop";
 
   const features = [
     { icon: Zap, title: 'Premium Quality', desc: 'Sourced from top global manufacturers' },

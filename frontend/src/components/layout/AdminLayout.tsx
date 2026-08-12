@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Outlet, NavLink, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { 
@@ -26,6 +26,7 @@ export default function AdminLayout() {
   const [isMobile, setIsMobile] = useState(window.innerWidth < 1024);
   const [showNotifications, setShowNotifications] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
   const [notifications, setNotifications] = useState<{id: number, text: string}[]>([
     { id: 1, text: 'Welcome to Collos Admin Panel 🚀' }
   ]);
@@ -48,8 +49,24 @@ export default function AdminLayout() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const [user, setUser] = useState<any>(() => {
+    try {
+      const userStr = localStorage.getItem('user');
+      return userStr ? JSON.parse(userStr) : null;
+    } catch (e) {
+      return null;
+    }
+  });
   const isSuperAdmin = user?.role_names?.includes('Super Admin');
 
   const navItems = [
@@ -247,10 +264,9 @@ export default function AdminLayout() {
 
             {/* Profile Avatar & Click Dropdown */}
             {user && (
-              <div className="relative" onMouseLeave={() => setIsProfileOpen(false)}>
+              <div className="relative" ref={profileRef}>
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  onMouseEnter={() => setIsProfileOpen(true)}
                   className="w-9 h-9 rounded-full bg-gray-100 dark:bg-gray-800 border-2 border-blue-500/30 flex items-center justify-center overflow-hidden focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all hover:border-blue-500"
                   title={user?.name}
                 >
@@ -269,7 +285,7 @@ export default function AdminLayout() {
                       initial={{ opacity: 0, y: 10, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      className="absolute top-11 right-0 pt-2 z-50"
+                      className="absolute top-full mt-2 right-0 z-50"
                     >
                       <div className="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 shadow-2xl rounded-xl w-56 overflow-hidden">
                         <div className="px-4 py-3 border-b border-gray-100 dark:border-gray-700 bg-gray-50 dark:bg-gray-900/50">

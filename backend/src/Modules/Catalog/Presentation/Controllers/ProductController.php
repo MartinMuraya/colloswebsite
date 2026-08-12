@@ -38,7 +38,10 @@ class ProductController extends Controller
             'slug' => 'nullable|string|max:255',
             'is_published' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:2048',
+            'image_url' => 'nullable|string|max:2048',
+            'short_description' => 'nullable|string',
+            'full_description' => 'nullable|string'
         ]);
 
         $validated['slug'] = $request->input('slug') ?: \Illuminate\Support\Str::slug($validated['name']);
@@ -67,7 +70,10 @@ class ProductController extends Controller
             'slug' => 'nullable|string|max:255',
             'is_published' => 'nullable|boolean',
             'is_featured' => 'nullable|boolean',
-            'image' => 'nullable|image|max:2048'
+            'image' => 'nullable|image|max:2048',
+            'image_url' => 'nullable|string|max:2048',
+            'short_description' => 'nullable|string',
+            'full_description' => 'nullable|string'
         ]);
 
         if (isset($validated['name']) && empty($validated['slug'])) {
